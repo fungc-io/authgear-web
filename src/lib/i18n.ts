@@ -80,8 +80,12 @@ export const PARTIAL_LOCALE_POST_SLUGS: Partial<Record<Locale, readonly string[]
   de: [
     'best-self-hosted-sso-platforms-compared-authgear-vs-keycloak-vs-authentik',
     'cloud-act-login-anbieter-nutzerdaten',
+    'digitale-souveraenitaet-login-identity-provider',
   ],
-  fr: ['cloud-act-fournisseur-identite-donnees-connexion'],
+  fr: [
+    'cloud-act-fournisseur-identite-donnees-connexion',
+    'souverainete-numerique-authentification',
+  ],
 };
 
 /**
@@ -93,14 +97,21 @@ export const PARTIAL_LOCALE_POST_SLUGS: Partial<Record<Locale, readonly string[]
  *
  * A path listed here is advertised (hreflang, footer switcher) only to the
  * locales in its own set, so neither English nor Traditional Chinese is
- * offered a URL that would 404. Keep in sync with `src/content/`;
- * `i18n.test.ts` checks each entry against disk.
+ * offered a URL that would 404. A set may name a single locale: that is a page
+ * written for one market with no counterpart anywhere else. Keep in sync with
+ * `src/content/`; `i18n.test.ts` checks each entry against disk.
  */
 export const TRANSLATION_SETS: readonly Readonly<Partial<Record<Locale, string>>>[] = [
   {
     de: '/post/cloud-act-login-anbieter-nutzerdaten/',
     fr: '/post/cloud-act-fournisseur-identite-donnees-connexion/',
   },
+  // The two digital-sovereignty guides are separate articles, not translations
+  // of one another: each is built on its own country's policy and standards
+  // (SecNumCloud for France, BSI C5 and C3A for Germany). They are listed
+  // individually so neither advertises the other as its alternate.
+  { fr: '/post/souverainete-numerique-authentification/' },
+  { de: '/post/digitale-souveraenitaet-login-identity-provider/' },
 ];
 
 /** The translation set this locale-neutral path belongs to, if any. */
