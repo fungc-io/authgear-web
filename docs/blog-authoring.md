@@ -11,7 +11,9 @@ src/content/blog-posts/en/my-post-slug/
 └── figure-1.webp
 ```
 
-- `{locale}` is `en` or `zh-Hant`. A handful of posts are also translated for the partial locales under `ja/` and `de/`, using the **same slug** as the English post; register each slug in `PARTIAL_LOCALE_POST_SLUGS` (`src/lib/i18n.ts`) so hreflang and the footer language switcher pick it up, and symlink `cover.webp` to the English one.
+- `{locale}` is `en` or `zh-Hant`. A handful of posts are also translated for the partial locales under `ja/`, `de/` and `fr/`, normally using the **same slug** as the English post; register each slug in `PARTIAL_LOCALE_POST_SLUGS` (`src/lib/i18n.ts`) so hreflang and the footer language switcher pick it up, and symlink `cover.webp` to the English one.
+
+  A post written for specific markets with **no English original** (and therefore a different slug per language, one per market's search terms) also needs an entry in `TRANSLATION_SETS` in the same file, listing the full path per locale. That entry is what pairs the two slugs in hreflang and keeps English and Traditional Chinese from being advertised at URLs that would 404. Point one language's `cover.webp` at the other's with a symlink.
 - `{slug}` is the URL slug — lowercase, hyphen-separated, no spaces or special characters. It determines the canonical URL: `/post/{slug}` (en) or `/zh-hant/post/{slug}` (zh-Hant). The on-disk locale folder uses the BCP-47 form `zh-Hant`; the URL prefix is lowercase `/zh-hant/`. (Legacy `/blog/{slug}` URLs 301-redirect to `/post/{slug}`.)
 - Keep images alongside `index.md` so references are relative (`./cover.webp`).
 - Before committing, run `npm run optimize-images` on new raster assets so they stay under the size limits in [`docs/content-images.md`](content-images.md). For `zh-Hant` posts that share the same images as `en`, use symlinks (see that doc) instead of duplicating files.

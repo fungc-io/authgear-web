@@ -1,5 +1,5 @@
 ---
-import { localesWithPage, localizedPath, stripLocaleSegment } from '@/lib/i18n';
+import { localeAlternates, localeUrlSegment, stripLocaleSegment } from '@/lib/i18n';
 
 interface Props {
   locale: string;
@@ -22,7 +22,9 @@ const basePath = stripLocaleSegment(currentPath);
 // Locales offered as switch-TO targets. Home-only locales (ja, es, de) appear
 // on the home page, where their translation exists, and nowhere else, so the
 // switcher never sends anyone to a URL that would redirect back to English.
-const SWITCHABLE_LOCALES = localesWithPage(basePath);
+// Each target brings its own path, since a market-specific page carries a
+// different slug per locale.
+const SWITCHABLE_LOCALES = localeAlternates(basePath);
 const currentLabel = LOCALE_LABELS[locale] ?? 'Language';
 ---
 
@@ -69,10 +71,10 @@ const currentLabel = LOCALE_LABELS[locale] ?? 'Language';
     </svg>
   </button>
   <ul class="ds-footer-lang-switcher__dropdown" role="listbox" id="footer-lang-dropdown" hidden>
-    {SWITCHABLE_LOCALES.map((l) => (
+    {SWITCHABLE_LOCALES.map(({ locale: l, path }) => (
       <li role="option" aria-selected={l === locale}>
         <a
-          href={localizedPath(l, basePath)}
+          href={`${localeUrlSegment(l)}${path}`}
           class={`ds-footer-lang-switcher__option${l === locale ? ' ds-footer-lang-switcher__option--active' : ''}`}
         >
           {LOCALE_LABELS[l]}

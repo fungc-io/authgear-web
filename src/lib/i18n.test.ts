@@ -77,13 +77,13 @@ describe('partial locales (es, de, ja)', () => {
 });
 
 import { readdirSync } from 'node:fs';
-import { PARTIAL_LOCALE_POST_SLUGS } from './i18n';
+import { PARTIAL_LOCALE_POST_SLUGS, TRANSLATION_SETS, localeAlternates } from './i18n';
 
 const DE_POST = '/post/best-self-hosted-sso-platforms-compared-authgear-vs-keycloak-vs-authentik';
 
 describe('PARTIAL_LOCALE_POST_SLUGS', () => {
-  it('covers ja and de', () => {
-    expect(Object.keys(PARTIAL_LOCALE_POST_SLUGS).sort()).toEqual(['de', 'ja']);
+  it('covers ja, de and fr', () => {
+    expect(Object.keys(PARTIAL_LOCALE_POST_SLUGS).sort()).toEqual(['de', 'fr', 'ja']);
   });
 
   it('matches the translated blog posts on disk, each locale with a post route', () => {
@@ -177,5 +177,77 @@ describe('PARTIAL_LOCALE_EXTRA_PATHS', () => {
     expect(localizedPath('fr', '/solutions/data-sovereignty')).toBe('/fr/solutions/data-sovereignty/');
     expect(localizedPath('ja', '/solutions/data-sovereignty')).toBe('/solutions/data-sovereignty/');
     expect(localizedPath('zh-Hant', '/solutions/data-sovereignty')).toBe('/zh-hant/solutions/data-sovereignty/');
+  });
+});
+
+describe('TRANSLATION_SETS', () => {
+  const DE_CLOUD_ACT = '/post/cloud-act-login-anbieter-nutzerdaten/';
+  const FR_CLOUD_ACT = '/post/cloud-act-fournisseur-identite-donnees-connexion/';
+
+  it('each path has a post on disk and a route for its locale', () => {
+    for (const set of TRANSLATION_SETS) {
+      for (const [loc, path] of Object.entries(set)) {
+        const slug = path.replace(/^\/post\//, '').replace(/\/$/, '');
+        expect(
+          existsSync(new URL(`../content/blog-posts/${loc}/${slug}/index.md`, import.meta.url)),
+          `src/content/blog-posts/${loc}/${slug}/index.md`,
+        ).toBe(true);
+        expect(
+          existsSync(new URL(`../pages/${loc}/post/[slug].astro`, import.meta.url)),
+          `src/pages/${loc}/post/[slug].astro`,
+        ).toBe(true);
+      }
+    }
+  });
+
+  it('registers each slug in its own locale post list', () => {
+    for (const set of TRANSLATION_SETS) {
+      for (const [loc, path] of Object.entries(set)) {
+        const slug = path.replace(/^\/post\//, '').replace(/\/$/, '');
+        expect(PARTIAL_LOCALE_POST_SLUGS[loc as keyof typeof PARTIAL_LOCALE_POST_SLUGS], loc).toContain(slug);
+      }
+    }
+  });
+
+  it('advertises only the locales in the set, never English or zh-Hant', () => {
+    for (const path of [DE_CLOUD_ACT, FR_CLOUD_ACT]) {
+      expect(hasLocalizedPage('de', path)).toBe(true);
+      expect(hasLocalizedPage('fr', path)).toBe(true);
+      expect(hasLocalizedPage('en', path)).toBe(false);
+      expect(hasLocalizedPage('zh-Hant', path)).toBe(false);
+      expect(hasLocalizedPage('ja', path)).toBe(false);
+      expect(localesWithPage(path)).toEqual(['de', 'fr']);
+    }
+  });
+
+  it('pairs the two slugs as alternates of each other', () => {
+    const expected = [
+      { locale: 'de', path: DE_CLOUD_ACT },
+      { locale: 'fr', path: FR_CLOUD_ACT },
+    ];
+    expect(localeAlternates(DE_CLOUD_ACT)).toEqual(expected);
+    expect(localeAlternates(FR_CLOUD_ACT)).toEqual(expected);
+  });
+
+  it('maps a link between the two locales onto the right slug', () => {
+    expect(localizedPath('fr', DE_CLOUD_ACT)).toBe(`/fr${FR_CLOUD_ACT}`);
+    expect(localizedPath('de', FR_CLOUD_ACT)).toBe(`/de${DE_CLOUD_ACT}`);
+    expect(localizedPath('de', DE_CLOUD_ACT)).toBe(`/de${DE_CLOUD_ACT}`);
+    expect(localizedPath('fr', FR_CLOUD_ACT)).toBe(`/fr${FR_CLOUD_ACT}`);
+  });
+
+  it('leaves the path alone for a locale with no version in the set', () => {
+    expect(localizedPath('en', DE_CLOUD_ACT)).toBe(DE_CLOUD_ACT);
+    expect(localizedPath('zh-Hant', DE_CLOUD_ACT)).toBe(DE_CLOUD_ACT);
+  });
+
+  it('leaves ordinary pages pairing on a shared path', () => {
+    expect(localeAlternates('/pricing/')).toEqual(
+      [...LOCALES].map((locale) => ({ locale, path: '/pricing/' })),
+    );
+    expect(localeAlternates('/about/')).toEqual([
+      { locale: 'en', path: '/about/' },
+      { locale: 'zh-Hant', path: '/about/' },
+    ]);
   });
 });
