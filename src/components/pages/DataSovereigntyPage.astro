@@ -12,6 +12,16 @@ const HELM_GUIDE_URL = 'https://docs.authgear.com/deployment/helm';
 const PORTAL_SIGNUP_URL =
   'https://portal.authgear.com/?utm_source=data-sovereignty&utm_medium=link&utm_campaign=start-free';
 
+// The CLOUD Act explainer has a different slug per market, so the href cannot
+// be derived with localizedPath(); es and zh-Hant point at the English post.
+const CLOUD_ACT_POST: Record<string, string> = {
+  en: '/post/uk-data-sovereignty-login-identity',
+  de: '/de/post/cloud-act-login-anbieter-nutzerdaten',
+  fr: '/fr/post/cloud-act-fournisseur-identite-donnees-connexion',
+  es: '/post/uk-data-sovereignty-login-identity',
+  'zh-Hant': '/post/uk-data-sovereignty-login-identity',
+};
+
 // Certification and licence names stay in English in every locale.
 const trustSignals = ['Apache-2.0', 'ISO 27001', 'SOC 2 Type II'];
 
@@ -39,6 +49,68 @@ const compareRows = [
   [T('compareRowSelfHost'), T('compareYes'), T('compareYes'), T('compareNo')],
   [T('compareRowManagedCloud'), T('compareYes'), T('compareNoThirdParties'), T('compareYes')],
 ];
+
+/**
+ * The FAQ, as data: each answer is a list of plain strings and links. The same
+ * list renders the visible list and the FAQPage structured data, so the two can
+ * never drift. Structured data wants plain text, so links contribute their
+ * label only.
+ */
+type FaqSegment = string | { text: string; href: string; className?: string };
+const faqItems: { q: string; answer: FaqSegment[] }[] = [
+  { q: T('faq1Q'), answer: [T('faq1A')] },
+  { q: T('faq2Q'), answer: [T('faq2A')] },
+  {
+    q: T('faq3Q'),
+    answer: [
+      T('faq3APre'),
+      { text: T('faq3ALink'), href: CLOUD_ACT_POST[locale] ?? CLOUD_ACT_POST.en },
+      T('faq3APost'),
+    ],
+  },
+  // "Can I keep user data in the UK?" answers a UK reader. The other markets
+  // are asking about the EU, so the question is English only and faq4Q/faq4A
+  // exist in en.json alone.
+  ...(locale === 'en' ? [{ q: T('faq4Q'), answer: [T('faq4A')] }] : []),
+  { q: T('faq5Q'), answer: [T('faq5APre'), { text: T('faq5ALink'), href: '#waitlist' }, T('faq5APost')] },
+  { q: T('faq6Q'), answer: [T('faq6A')] },
+  {
+    q: T('faq7Q'),
+    answer: [
+      T('faq7APre'),
+      { text: T('faq7ALink1'), href: localizedPath(locale, '/dpa') },
+      T('faq7AMid'),
+      { text: T('faq7ALink2'), href: localizedPath(locale, '/sub-processors') },
+      T('faq7APost'),
+    ],
+  },
+  { q: T('faq8Q'), answer: [T('faq8A')] },
+  {
+    q: T('faq9Q'),
+    answer: [
+      T('faq9APre'),
+      {
+        text: T('faq9ALink'),
+        href: localizedPath(locale, '/schedule-demo'),
+        className: 'plausible-event-name--get-demo plausible-event-location--data-sovereignty-faq',
+      },
+      T('faq9APost'),
+    ],
+  },
+];
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map(({ q, answer }) => ({
+    '@type': 'Question',
+    name: q,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: answer.map((part) => (typeof part === 'string' ? part : part.text)).join(''),
+    },
+  })),
+};
 ---
 
 <section class="ds-hero-banner--dark">
@@ -227,6 +299,10 @@ const compareRows = [
         </table>
       </div>
     </div>
+    <p class="dsov-table-note">
+      {T('compareKeycloakPre')}
+      <a href={localizedPath(locale, '/compare/keycloak-alternative')} class="dsov-link">{T('compareKeycloakLink')}</a>
+    </p>
   </div>
 </section>
 
@@ -256,46 +332,25 @@ const compareRows = [
     <div class="dsov-faq">
       <h2 class="dsov-faq__heading">{T('faqTitle')}</h2>
       <div class="dsov-faq__list">
-        <div class="dsov-faq__item">
-          <h3 class="dsov-faq__question">{T('faq1Q')}</h3>
-          <div class="dsov-faq__answer">
-            <p>{T('faq1A')}</p>
+        {faqItems.map(({ q, answer }) => (
+          <div class="dsov-faq__item">
+            <h3 class="dsov-faq__question">{q}</h3>
+            <div class="dsov-faq__answer">
+              <p>
+                {answer.map((part) =>
+                  typeof part === 'string' ? part : (
+                    <a href={part.href} class={`dsov-link${part.className ? ` ${part.className}` : ''}`}>{part.text}</a>
+                  ),
+                )}
+              </p>
+            </div>
           </div>
-        </div>
-        <div class="dsov-faq__item">
-          <h3 class="dsov-faq__question">{T('faq2Q')}</h3>
-          <div class="dsov-faq__answer">
-            <p>{T('faq2APre')}<a href="#waitlist" class="dsov-link">{T('faq2ALink')}</a>{T('faq2APost')}</p>
-          </div>
-        </div>
-        <div class="dsov-faq__item">
-          <h3 class="dsov-faq__question">{T('faq3Q')}</h3>
-          <div class="dsov-faq__answer">
-            <p>{T('faq3A')}</p>
-          </div>
-        </div>
-        <div class="dsov-faq__item">
-          <h3 class="dsov-faq__question">{T('faq4Q')}</h3>
-          <div class="dsov-faq__answer">
-            <p>{T('faq4APre')}<a href={localizedPath(locale, '/dpa')} class="dsov-link">{T('faq4ALink1')}</a>{T('faq4AMid')}<a href={localizedPath(locale, '/sub-processors')} class="dsov-link">{T('faq4ALink2')}</a>{T('faq4APost')}</p>
-          </div>
-        </div>
-        <div class="dsov-faq__item">
-          <h3 class="dsov-faq__question">{T('faq5Q')}</h3>
-          <div class="dsov-faq__answer">
-            <p>{T('faq5A')}</p>
-          </div>
-        </div>
-        <div class="dsov-faq__item">
-          <h3 class="dsov-faq__question">{T('faq6Q')}</h3>
-          <div class="dsov-faq__answer">
-            <p>{T('faq6APre')}<a href={localizedPath(locale, '/schedule-demo')} class="dsov-link plausible-event-name--get-demo plausible-event-location--data-sovereignty-faq">{T('faq6ALink')}</a>{T('faq6APost')}</p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   </div>
 </section>
+<script type="application/ld+json" set:html={JSON.stringify(faqLd)} />
 
 <section class="ds-section ds-footer-cta-section">
   <div class="ds-container">

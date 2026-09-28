@@ -120,4 +120,121 @@ test.describe('/solutions/data-sovereignty', () => {
     await expect(firstLabel).toBeVisible();
     await expect(firstLabel).toHaveText('Where it runs');
   });
+
+  // --- FAQ: nine questions, with FAQPage structured data on every locale ---
+
+  const LOCALE_PATHS = [
+    { lang: 'en', path: PATH, keycloak: '/compare/keycloak-alternative/', cloudAct: '/post/uk-data-sovereignty-login-identity' },
+    { lang: 'zh-Hant', path: `/zh-hant${PATH}`, keycloak: '/compare/keycloak-alternative/', cloudAct: '/post/uk-data-sovereignty-login-identity' },
+    { lang: 'de', path: `/de${PATH}`, keycloak: '/de/compare/keycloak-alternative/', cloudAct: '/de/post/cloud-act-login-anbieter-nutzerdaten' },
+    { lang: 'es', path: `/es${PATH}`, keycloak: '/es/compare/keycloak-alternative/', cloudAct: '/post/uk-data-sovereignty-login-identity' },
+    { lang: 'fr', path: `/fr${PATH}`, keycloak: '/fr/compare/keycloak-alternative/', cloudAct: '/fr/post/cloud-act-fournisseur-identite-donnees-connexion' },
+  ] as const;
+
+  for (const { lang, path, keycloak, cloudAct } of LOCALE_PATHS) {
+    test(`${lang}: FAQPage JSON-LD lists every visible question`, async ({ page }) => {
+      await page.goto(path);
+
+      const visible = (await page.locator('.dsov-faq__question').allTextContents()).map((t) => t.trim());
+      // English also carries "Can I keep user data in the UK?"; the other
+      // markets are asking about the EU, so they show eight.
+      expect(visible.length, 'every FAQ item is rendered').toBe(lang === 'en' ? 9 : 8);
+
+      const faq = await page.locator('script[type="application/ld+json"]').evaluateAll((els) => {
+        for (const el of els) {
+          try {
+            const parsed = JSON.parse(el.textContent ?? '');
+            if (parsed['@type'] === 'FAQPage') return parsed;
+          } catch {
+            /* not JSON-LD we care about */
+          }
+        }
+        return null;
+      });
+      expect(faq, 'the page emits FAQPage structured data').not.toBeNull();
+
+      const entities = faq.mainEntity as { name: string; acceptedAnswer: { text: string } }[];
+      // Same questions, same order, and no answer left empty.
+      expect(entities.map((e) => e.name)).toEqual(visible);
+      for (const entity of entities) {
+        expect(entity.acceptedAnswer.text.trim(), `answer for "${entity.name}"`).not.toBe('');
+      }
+      // Answers that contain a link keep the link label in the plain text.
+      const cloudActEntity = entities.find((e) => /CLOUD Act/i.test(e.name));
+      expect(cloudActEntity?.acceptedAnswer.text.length).toBeGreaterThan(60);
+    });
+
+    test(`${lang}: new FAQ answers link to the CLOUD Act post and Keycloak page`, async ({ page }) => {
+      await page.goto(path);
+      await expect(page.locator(`.dsov-faq__answer a[href="${cloudAct}"]`)).toHaveCount(1);
+      await expect(page.locator(`.dsov-table-note a[href="${keycloak}"]`)).toHaveCount(1);
+    });
+  }
+
+  test('the FAQ covers residency vs sovereignty, the CLOUD Act and UK data', async ({ page }) => {
+    await page.goto(PATH);
+    const questions = await page.locator('.dsov-faq__question').allTextContents();
+    expect(questions[0]).toContain('Where is Authgear based');
+    expect(questions[1]).toContain('data residency and data sovereignty');
+    expect(questions[2]).toContain('CLOUD Act');
+    expect(questions[3]).toContain('keep user data in the UK');
+  });
+
+  test('the UK data question is English only', async ({ page }) => {
+    for (const { lang, path } of LOCALE_PATHS.filter((l) => l.lang !== 'en')) {
+      await page.goto(path);
+      const questions = await page.locator('.dsov-faq__question').allTextContents();
+      expect(questions.join(' '), `${lang} asks the UK data question`).not.toMatch(
+        /Nutzerdaten in Großbritannien|datos de usuarios en el Reino Unido|données utilisateurs au Royaume-Uni|用戶資料留在英國/,
+      );
+    }
+  });
+
+  test('the UK company card no longer claims support stays in Europe', async ({ page }) => {
+    await page.goto(PATH);
+    const body = (await page.locator('main').textContent()) ?? '';
+    expect(body).toContain("Your users' data can stay in the UK or the EU");
+    expect(body).not.toContain('Your contract, support and data-protection terms stay in Europe');
+  });
+
+  test('self-hosting mentions a UK provider in English only', async ({ page }) => {
+    await page.goto(PATH);
+    await expect(page.locator('main')).toContainText('a UK provider');
+
+    // The other markets are choosing European infrastructure, so their
+    // self-hosting card lists European providers only. Scoped to that card:
+    // the CLOUD Act answer further down does mention a UK or EU provider,
+    // which is correct.
+    for (const { lang, path } of LOCALE_PATHS.filter((l) => l.lang !== 'en')) {
+      await page.goto(path);
+      const cards = await page.locator('.svg-card .ds-svg-card-description').allTextContents();
+      const selfHosting = cards.find((text) => text.includes('Hetzner'));
+      expect(selfHosting, `${lang} has a self-hosting card`).toBeTruthy();
+      expect(selfHosting, `${lang} names a UK provider in the self-hosting card`).not.toMatch(
+        /britische[rn]? Anbieter|proveedor británico|fournisseur britannique|英國供應商/,
+      );
+    }
+  });
+});
+
+// Inbound links added alongside the data sovereignty page update.
+test.describe('links into /solutions/data-sovereignty', () => {
+  for (const [label, from, to] of [
+    ['auth0 compare', '/compare/auth0-alternative/', '/solutions/data-sovereignty/'],
+    ['okta compare', '/compare/okta-alternative/', '/solutions/data-sovereignty/'],
+    ['auth0 compare (zh-Hant)', '/zh-hant/compare/auth0-alternative/', '/zh-hant/solutions/data-sovereignty/'],
+    ['okta compare (zh-Hant)', '/zh-hant/compare/okta-alternative/', '/zh-hant/solutions/data-sovereignty/'],
+  ] as const) {
+    test(`${label} links to the page near the migration CTA`, async ({ page }) => {
+      await page.goto(from);
+      await expect(page.locator(`.compare-sovereignty-note a[href="${to}"]`)).toHaveCount(1);
+    });
+  }
+
+  test('the Auth0 alternatives post links to the page', async ({ page }) => {
+    await page.goto('/post/top-open-source-auth0-alternatives/');
+    await expect(
+      page.locator('.blog-post__body a[href="/solutions/data-sovereignty"]'),
+    ).toHaveCount(1);
+  });
 });

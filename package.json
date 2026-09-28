@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "predev": "rm -rf dist",
     "dev": "NODE_ENV=development astro dev --host 0.0.0.0",
     "build": "astro build",
     "preview": "astro dev --host 0.0.0.0",
