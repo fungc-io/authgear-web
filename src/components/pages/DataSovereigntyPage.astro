@@ -7,6 +7,22 @@ interface Props { locale: string }
 const { locale } = Astro.props;
 const T = (key: string) => t(locale, `DataSovereignty.${key}`);
 
+// The Traditional Chinese page is written for Taiwan: it drops the EU framing,
+// leads with on-premise and a Taiwan private cloud, and answers the local rules
+// (個資法, 資安法) instead of the CLOUD Act. Everything Taiwan-specific hangs off
+// this flag, so the other locales are untouched.
+const isTaiwan = locale === 'zh-Hant';
+
+// A newline in `heroTitle` forces a line break. CJK text has no spaces, so
+// the browser breaks wherever it runs out of room and can leave a single
+// character stranded on its own line; this lets the copy pick the break.
+// Locales whose title has no newline render exactly as before.
+const heroTitleLines = T('heroTitle').split('\n');
+
+const industryCards = isTaiwan
+  ? [1, 2, 3].map((i) => ({ title: T(`industry${i}Title`), body: T(`industry${i}Desc`) }))
+  : [];
+
 // docs.authgear.com/deploy-on-your-cloud/helm 307s here; link the final URL.
 const HELM_GUIDE_URL = 'https://docs.authgear.com/deployment/helm';
 const PORTAL_SIGNUP_URL =
@@ -56,8 +72,45 @@ const compareRows = [
  * never drift. Structured data wants plain text, so links contribute their
  * label only.
  */
-type FaqSegment = string | { text: string; href: string; className?: string };
-const faqItems: { q: string; answer: FaqSegment[] }[] = [
+type FaqSegment = string | { text: string; href: string; className?: string; external?: boolean };
+const dpaAnswer: FaqSegment[] = [
+  T('faq7APre'),
+  { text: T('faq7ALink1'), href: localizedPath(locale, '/dpa') },
+  T('faq7AMid'),
+  { text: T('faq7ALink2'), href: localizedPath(locale, '/sub-processors') },
+  T('faq7APost'),
+];
+const costAnswer: FaqSegment[] = [
+  T('faq9APre'),
+  {
+    text: T('faq9ALink'),
+    href: localizedPath(locale, '/schedule-demo'),
+    className: 'plausible-event-name--get-demo plausible-event-location--data-sovereignty-faq',
+  },
+  T('faq9APost'),
+];
+
+const PDPA_ARTICLE_21 = 'https://law.moj.gov.tw/LawClass/LawSingle.aspx?pcode=I0050021&flno=21';
+
+const taiwanFaq: { q: string; answer: FaqSegment[] }[] = [
+  { q: T('twFaq1Q'), answer: [T('twFaq1A')] },
+  {
+    q: T('twFaq2Q'),
+    answer: [
+      T('twFaq2APre'),
+      { text: T('twFaq2ALink'), href: PDPA_ARTICLE_21, external: true },
+      T('twFaq2APost'),
+    ],
+  },
+  { q: T('twFaq3Q'), answer: [T('twFaq3A')] },
+  { q: T('twFaq4Q'), answer: [T('twFaq4A')] },
+  { q: T('faq2Q'), answer: [T('faq2A')] },
+  { q: T('faq8Q'), answer: [T('faq8A')] },
+  { q: T('faq7Q'), answer: dpaAnswer },
+  { q: T('faq9Q'), answer: costAnswer },
+];
+
+const defaultFaq: { q: string; answer: FaqSegment[] }[] = [
   { q: T('faq1Q'), answer: [T('faq1A')] },
   { q: T('faq2Q'), answer: [T('faq2A')] },
   {
@@ -74,30 +127,12 @@ const faqItems: { q: string; answer: FaqSegment[] }[] = [
   ...(locale === 'en' ? [{ q: T('faq4Q'), answer: [T('faq4A')] }] : []),
   { q: T('faq5Q'), answer: [T('faq5APre'), { text: T('faq5ALink'), href: '#waitlist' }, T('faq5APost')] },
   { q: T('faq6Q'), answer: [T('faq6A')] },
-  {
-    q: T('faq7Q'),
-    answer: [
-      T('faq7APre'),
-      { text: T('faq7ALink1'), href: localizedPath(locale, '/dpa') },
-      T('faq7AMid'),
-      { text: T('faq7ALink2'), href: localizedPath(locale, '/sub-processors') },
-      T('faq7APost'),
-    ],
-  },
+  { q: T('faq7Q'), answer: dpaAnswer },
   { q: T('faq8Q'), answer: [T('faq8A')] },
-  {
-    q: T('faq9Q'),
-    answer: [
-      T('faq9APre'),
-      {
-        text: T('faq9ALink'),
-        href: localizedPath(locale, '/schedule-demo'),
-        className: 'plausible-event-name--get-demo plausible-event-location--data-sovereignty-faq',
-      },
-      T('faq9APost'),
-    ],
-  },
+  { q: T('faq9Q'), answer: costAnswer },
 ];
+
+const faqItems = isTaiwan ? taiwanFaq : defaultFaq;
 
 const faqLd = {
   '@context': 'https://schema.org',
@@ -118,7 +153,11 @@ const faqLd = {
     <div class="ds-hero-banner__row">
       <div class="ds-hero-banner__body">
       <p class="ds-section-eyebrow ds-section-eyebrow--on-dark">{T('heroEyebrow')}</p>
-      <h1 class="ds-hero-banner__title">{T('heroTitle')}</h1>
+      <h1 class="ds-hero-banner__title">
+        {heroTitleLines.map((line, i) => (
+          <Fragment>{i > 0 && <br />}{line}</Fragment>
+        ))}
+      </h1>
       <p class="ds-hero-banner__description">{T('heroDescription')}</p>
       <div class="ds-hero-banner__ctas">
         <a href="#waitlist" class="ds-btn ds-btn-secondary">
@@ -180,6 +219,24 @@ const faqLd = {
     </div>
   </div>
 </section>
+
+{industryCards.length > 0 && (
+  <section class="ds-section ds-bg-white" data-industry-cards>
+    <div class="ds-container">
+      <div class="title-content">
+        <h2 class="heading-on-light">{T('industryTitle')}</h2>
+      </div>
+      <div class="dsov-industry-grid">
+        {industryCards.map((card) => (
+          <div class="dsov-industry-card">
+            <h3 class="dsov-industry-card__title">{card.title}</h3>
+            <p class="dsov-industry-card__body">{card.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
 <section class="ds-section ds-bg-white">
   <div class="ds-container">
@@ -339,7 +396,11 @@ const faqLd = {
               <p>
                 {answer.map((part) =>
                   typeof part === 'string' ? part : (
-                    <a href={part.href} class={`dsov-link${part.className ? ` ${part.className}` : ''}`}>{part.text}</a>
+                    <a
+                      href={part.href}
+                      class={`dsov-link${part.className ? ` ${part.className}` : ''}`}
+                      {...(part.external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                    >{part.text}</a>
                   ),
                 )}
               </p>
@@ -427,6 +488,49 @@ const faqLd = {
 
   .dsov-link:hover {
     color: var(--color-primary-800);
+  }
+
+  /* Regulated-industry cards (Taiwan page only). */
+  .dsov-industry-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--spacing-s);
+    width: 100%;
+    max-width: var(--ds-feature-callout-max-width);
+    margin-inline: auto;
+  }
+
+  @media (width < 1024px) {
+    .dsov-industry-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .dsov-industry-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: var(--spacing-s);
+    border: 0.0625rem solid var(--color-border-light-subtle);
+    border-radius: 0.75rem;
+    background: var(--color-background-light-primary, #fff);
+  }
+
+  .dsov-industry-card__title {
+    margin: 0;
+    color: var(--color-text-light-primary);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .dsov-industry-card__body {
+    margin: 0;
+    color: var(--color-text-light-secondary);
+    font-family: var(--font-sans);
+    font-size: var(--text-body2);
+    line-height: var(--text-body2--line-height);
   }
 
   .dsov-table-note {
