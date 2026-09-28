@@ -340,6 +340,10 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
           <p class="features-hero-description inverse">
             {tAuth0('ctaMigrateDescription')}
           </p>
+          <p class="features-hero-description inverse compare-sovereignty-note">
+            {tAuth0('dataSovereigntyPre')}
+            <a href={localizedPath(locale, '/solutions/data-sovereignty')}>{tAuth0('dataSovereigntyLink')}</a>
+          </p>
           <div class="features-hero-cta-wrapper in-ready-to-switch">
             <a
               href={localizedPath(locale, '/schedule-demo')}
@@ -361,3 +365,20 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
     </div>
   </div>
 </>
+
+<style>
+  /* Inline link on the dark "ready to switch" band. */
+  .compare-sovereignty-note {
+    margin: 0.75rem 0 0;
+  }
+
+  .compare-sovereignty-note a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.125rem;
+  }
+
+  .compare-sovereignty-note a:hover {
+    text-decoration: none;
+  }
+</style>

@@ -174,6 +174,10 @@ const { locale } = Astro.props;
         <h1 class="title features-hero-v2 inverse nomargin">{t(locale, 'Compare.readyToSwitch')}</h1>
         <div class="split-content features-hero-left nomargin">
           <p class="features-hero-description inverse">{t(locale, 'OktaAlternative.ctaMigrateDescription')}</p>
+          <p class="features-hero-description inverse compare-sovereignty-note">
+            {t(locale, 'OktaAlternative.dataSovereigntyPre')}
+            <a href={localizedPath(locale, '/solutions/data-sovereignty')}>{t(locale, 'OktaAlternative.dataSovereigntyLink')}</a>
+          </p>
           <div class="features-hero-cta-wrapper in-ready-to-switch">
             <a href={localizedPath(locale, "/schedule-demo")} target="_blank" class="button-primary feature-hero-btn-v2 nomargin w-button">
               {t(locale, 'Compare.talkToUs')}
@@ -187,3 +191,20 @@ const { locale } = Astro.props;
     </div>
   </div>
 </>
+
+<style>
+  /* Inline link on the dark "ready to switch" band. */
+  .compare-sovereignty-note {
+    margin: 0.75rem 0 0;
+  }
+
+  .compare-sovereignty-note a {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.125rem;
+  }
+
+  .compare-sovereignty-note a:hover {
+    text-decoration: none;
+  }
+</style>

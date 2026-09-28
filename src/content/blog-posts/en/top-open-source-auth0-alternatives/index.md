@@ -7,7 +7,7 @@ featured: false
 metaTitle: "Top Open-Source Auth0 Alternatives in 2026: Secure & Self-Hosted Options"
 metaDescription: "Explore the best open-source Auth0 alternatives in 2026. Compare features, deployment models, security, and use cases to choose the right identity solution for your team."
 publishedAt: 2026-01-05T15:47:36.194Z
-updatedAt: 2026-03-04T12:40:23.932Z
+updatedAt: 2026-09-28T00:00:00.000Z
 draft: false
 ---
 
@@ -340,3 +340,7 @@ Yes. Authgear supports passkeys (FIDO2/WebAuthn), biometric login, SMS OTP, What
 ### **Can Authgear handle both workforce and customer identities together?**
 
 Yes. Authgear enables clear separation between corporate and external identities from a single deployment - managing both internal and external user populations without running two separate identity vendors. This separation reduces risk, limits the impact of compromised accounts, and simplifies governance.
+
+## Keeping user data in the UK or EU
+
+Need to keep user data in the UK or EU? [See how Authgear handles data sovereignty](/solutions/data-sovereignty).
