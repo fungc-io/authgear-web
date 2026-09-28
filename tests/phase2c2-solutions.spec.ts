@@ -48,6 +48,10 @@ test('ContactForm hydrates on /solutions/enterprise-sso', async ({ page }) => {
   // ContactForm uses client:visible — scroll into view to trigger hydration.
   await nameInput.scrollIntoViewIfNeeded();
   await expect(nameInput).toBeVisible();
+  // `toBeVisible()` passes on the server-rendered input, before React has
+  // hydrated; filling then is wiped by the first client render. Astro drops the
+  // `ssr` attribute once the island has hydrated, so wait for that first.
+  await page.locator('astro-island:not([ssr]):has(input[name="Name"])').waitFor();
   await nameInput.fill('Enterprise Lead');
   await expect(nameInput).toHaveValue('Enterprise Lead');
 });
