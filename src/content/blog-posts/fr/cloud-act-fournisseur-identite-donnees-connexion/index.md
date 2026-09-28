@@ -103,8 +103,6 @@ Les questions à poser à tout fournisseur :
 
 Authgear est développé par Skymakers Digital Limited, une société britannique. Le Royaume-Uni n'est pas les États-Unis, mais il existe un [accord Royaume-Uni–États-Unis sur l'accès aux données](https://www.gov.uk/government/publications/uk-us-data-access-agreement-factsheet/policy-factsheet-on-the-uk-us-data-access-agreement). Il ne vise que la criminalité grave, et son article 4 interdit aux injonctions américaines de cibler des personnes situées au Royaume-Uni. Les utilisateurs situés dans l'UE ne bénéficient pas de cette clause. Un siège britannique ne suffit donc pas, à lui seul, à répondre au CLOUD Act.
 
-Authgear Cloud fonctionne sur Google Cloud, un fournisseur américain, aux États-Unis ou à Hong Kong. Si le CLOUD Act est pour vous un critère éliminatoire, Authgear Cloud n'est pas la bonne option.
-
 La réponse, c'est l'auto-hébergement ou le cloud privé :
 
 - **Auto-hébergement :** Authgear est open source sous licence Apache-2.0, avec toutes ses fonctionnalités. Vous pouvez l'installer chez OVHcloud, Scaleway, Hetzner ou STACKIT, et choisir vous-même vos prestataires d'e-mail et de SMS.
