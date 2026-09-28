@@ -185,9 +185,23 @@ test.describe('/solutions/data-sovereignty', () => {
     expect(body).not.toContain('Your contract, support and data-protection terms stay in Europe');
   });
 
-  test('self-hosting mentions a UK provider', async ({ page }) => {
+  test('self-hosting mentions a UK provider in English only', async ({ page }) => {
     await page.goto(PATH);
     await expect(page.locator('main')).toContainText('a UK provider');
+
+    // The other markets are choosing European infrastructure, so their
+    // self-hosting card lists European providers only. Scoped to that card:
+    // the CLOUD Act answer further down does mention a UK or EU provider,
+    // which is correct.
+    for (const { lang, path } of LOCALE_PATHS.filter((l) => l.lang !== 'en')) {
+      await page.goto(path);
+      const cards = await page.locator('.svg-card .ds-svg-card-description').allTextContents();
+      const selfHosting = cards.find((text) => text.includes('Hetzner'));
+      expect(selfHosting, `${lang} has a self-hosting card`).toBeTruthy();
+      expect(selfHosting, `${lang} names a UK provider in the self-hosting card`).not.toMatch(
+        /britische[rn]? Anbieter|proveedor británico|fournisseur britannique|英國供應商/,
+      );
+    }
   });
 });
 

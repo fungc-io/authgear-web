@@ -250,7 +250,7 @@
     "control2Title": "Open source, Apache-2.0",
     "control2Desc": "Lisez chaque ligne de code. Forkez, auditez, exécutez vous-même.",
     "control3Title": "Exécutez-le où vous voulez",
-    "control3Desc": "Auto-hébergez sur Hetzner, OVHcloud, Scaleway, STACKIT, chez un fournisseur britannique ou sur votre propre matériel. En auto-hébergement, les données de vos utilisateurs n'atteignent jamais nos serveurs.",
+    "control3Desc": "Auto-hébergez sur Hetzner, OVHcloud, Scaleway, STACKIT ou votre propre matériel. En auto-hébergement, les données de vos utilisateurs n'atteignent jamais nos serveurs.",
     "control4Title": "Emportez vos données avec vous",
     "control4Desc": "Exportez tous les utilisateurs et leurs données à tout moment. Partir reste toujours possible.",
     "waysTitle": "Trois façons d'exécuter Authgear",

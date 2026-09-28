@@ -1712,7 +1712,7 @@
     "control2Title": "開源，Apache-2.0 授權",
     "control2Desc": "閱讀每一行程式碼。分支、稽核、自己執行。",
     "control3Title": "在您想要的地方執行",
-    "control3Desc": "在 Hetzner、OVHcloud、Scaleway、STACKIT、英國供應商或您自己的硬體上自主架設。自主架設時，用戶資料完全不會經過我們的伺服器。",
+    "control3Desc": "在 Hetzner、OVHcloud、Scaleway、STACKIT 或您自己的硬體上自主架設。自主架設時，用戶資料完全不會經過我們的伺服器。",
     "control4Title": "資料隨時帶走",
     "control4Desc": "隨時匯出所有用戶及其資料。離開永遠是一個選項。",
     "waysTitle": "執行 Authgear 的三種方式",
