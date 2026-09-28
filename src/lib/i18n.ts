@@ -77,8 +77,37 @@ export const PARTIAL_LOCALE_POST_SLUGS: Partial<Record<Locale, readonly string[]
     'two-factor-authentication-cost',
     'whatsapp-api-pricing',
   ],
-  de: ['best-self-hosted-sso-platforms-compared-authgear-vs-keycloak-vs-authentik'],
+  de: [
+    'best-self-hosted-sso-platforms-compared-authgear-vs-keycloak-vs-authentik',
+    'cloud-act-login-anbieter-nutzerdaten',
+  ],
+  fr: ['cloud-act-fournisseur-identite-donnees-connexion'],
 };
+
+/**
+ * Pages written for specific markets with no English original, where the slug
+ * differs per language because each targets its own search terms. Every other
+ * page shares one locale-neutral path across locales, so `hasLocalizedPage()`
+ * and `localizedPath()` can just swap the URL prefix; these cannot, and each
+ * entry therefore lists the full locale-neutral path per locale.
+ *
+ * A path listed here is advertised (hreflang, footer switcher) only to the
+ * locales in its own set, so neither English nor Traditional Chinese is
+ * offered a URL that would 404. Keep in sync with `src/content/`;
+ * `i18n.test.ts` checks each entry against disk.
+ */
+export const TRANSLATION_SETS: readonly Readonly<Partial<Record<Locale, string>>>[] = [
+  {
+    de: '/post/cloud-act-login-anbieter-nutzerdaten/',
+    fr: '/post/cloud-act-fournisseur-identite-donnees-connexion/',
+  },
+];
+
+/** The translation set this locale-neutral path belongs to, if any. */
+function translationSetFor(pathname: string): Readonly<Partial<Record<Locale, string>>> | undefined {
+  const path = withTrailingSlash(pathname);
+  return TRANSLATION_SETS.find((set) => Object.values(set).includes(path));
+}
 
 function isTranslatedPostPath(locale: string, pathname: string): boolean {
   const match = withTrailingSlash(pathname).match(/^\/post\/([^/]+)\/$/);
@@ -96,6 +125,10 @@ function isPartialLocalePath(pathname: string): boolean {
 
 /** Does `locale` have its own page at this locale-neutral pathname? */
 export function hasLocalizedPage(locale: string, pathname: string): boolean {
+  // Market-specific pages exist only in the locales of their own set — English
+  // included, which is why this runs before the default-locale shortcut.
+  const set = translationSetFor(pathname);
+  if (set) return set[locale as Locale] !== undefined;
   if (locale === DEFAULT_LOCALE) return true;
   const path = withTrailingSlash(pathname);
   if (!PARTIAL_LOCALES.includes(locale as Locale)) return !NO_ZH_HANT_PATHS.includes(path);
@@ -116,6 +149,24 @@ export function localesWithPage(pathname: string): Locale[] {
   return LOCALES.filter((loc) => hasLocalizedPage(loc, pathname));
 }
 
+/** A locale that has this page, with the locale-neutral path it lives at. */
+export type LocaleAlternate = { locale: Locale; path: string };
+
+/**
+ * Every locale version of a page, as locale/path pairs. Used for `hreflang`
+ * alternates and the footer language switcher. For an ordinary page each
+ * locale shares the same path; for a `TRANSLATION_SETS` page each locale
+ * carries its own slug.
+ */
+export function localeAlternates(pathname: string): LocaleAlternate[] {
+  const set = translationSetFor(pathname);
+  if (set) {
+    return LOCALES.filter((loc) => set[loc] !== undefined).map((loc) => ({ locale: loc, path: set[loc]! }));
+  }
+  const path = withTrailingSlash(pathname);
+  return localesWithPage(path).map((loc) => ({ locale: loc, path }));
+}
+
 /**
  * Public URL for a path. Default English has no prefix; `zh-Hant` uses `/zh-hant`.
  * `path` must start with `/` or include query (e.g. `/blog?category=x`).
@@ -126,6 +177,15 @@ export function localizedPath(locale: string, path: string): string {
   const pathname = q === -1 ? raw : raw.slice(0, q);
   const search = q === -1 ? '' : raw.slice(q);
   const normalized = pathname.endsWith('/') ? pathname : pathname + '/';
+  // Within a translation set the slug differs per locale, so swap the whole
+  // path rather than just the prefix. A locale with no version in the set has
+  // nowhere to go, so the path is left untouched for the caller to handle.
+  const set = translationSetFor(normalized);
+  if (set) {
+    const target = set[locale as Locale];
+    if (!target) return normalized + search;
+    return `${LOCALE_URL_SEGMENT[locale as Locale] ?? ''}${target}${search}`;
+  }
   if (locale === DEFAULT_LOCALE || locale === 'en') {
     return normalized + search;
   }

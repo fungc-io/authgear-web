@@ -3,7 +3,7 @@ import '@/styles/global.css';
 import SiteNav from '@/components/nav/SiteNav.astro';
 import SiteFooter from '@/components/nav/SiteFooter.astro';
 import CookieConsentBanner from '@/components/CookieConsentBanner.astro';
-import { LOCALES, localeToHtmlLang, localeUrlSegment, localesWithPage, stripLocaleSegment, type Locale } from '@/lib/i18n';
+import { LOCALES, localeAlternates, localeToHtmlLang, localeUrlSegment, stripLocaleSegment, type Locale } from '@/lib/i18n';
 import { t } from '@/i18n';
 
 interface Props {
@@ -36,13 +36,19 @@ const siteName = t(locale, 'Seo.siteName');
 // locale-neutral path, then rebuild a URL per locale. Alternates are emitted
 // only for locales that really have this page: full-coverage locales except on
 // pages without a zh-Hant twin (`NO_ZH_HANT_PATHS`), partial locales just on their translated
-// paths, plus the current locale itself.
+// paths, plus the current locale itself. Market-specific pages (`TRANSLATION_SETS`)
+// carry a different slug per locale and have no English version, so each
+// alternate brings its own path and `x-default` is omitted.
 const siteOrigin = Astro.site?.toString().replace(/\/$/, '') ?? '';
 const pathname = Astro.url.pathname;
 const neutralPath = stripLocaleSegment(pathname) || '/';
-const urlFor = (loc: string) => `${siteOrigin}${localeUrlSegment(loc)}${neutralPath === '/' ? '/' : neutralPath}`;
-const enUrl = urlFor('en');
-const alternateLocales = LOCALES.filter((loc) => loc === locale || localesWithPage(neutralPath).includes(loc));
+const urlFor = (loc: string, path: string = neutralPath) =>
+  `${siteOrigin}${localeUrlSegment(loc)}${path === '/' ? '/' : path}`;
+const alternates = localeAlternates(neutralPath);
+const alternateLocales = alternates.some((alt) => alt.locale === locale)
+  ? alternates
+  : [...alternates, { locale: locale as Locale, path: neutralPath }];
+const enUrl = alternates.find((alt) => alt.locale === 'en')?.path ? urlFor('en') : null;
 const canonical = canonicalProp ?? urlFor(LOCALES.includes(locale as Locale) ? locale : 'en');
 const OG_LOCALES: Record<string, string> = { en: 'en_US', 'zh-Hant': 'zh_TW', ja: 'ja_JP', es: 'es_ES', de: 'de_DE', fr: 'fr_FR' };
 const ogLocale = OG_LOCALES[locale] ?? 'en_US';
@@ -74,10 +80,10 @@ const fontsUrl = `https://fonts.googleapis.com/css2?${fontFamilies.map((f) => `f
     <meta name="description" content={description} />
 
     <link rel="canonical" href={canonical} />
-    {alternateLocales.map((loc) => (
-      <link rel="alternate" hreflang={localeToHtmlLang(loc)} href={urlFor(loc)} />
+    {alternateLocales.map(({ locale: loc, path }) => (
+      <link rel="alternate" hreflang={localeToHtmlLang(loc)} href={urlFor(loc, path)} />
     ))}
-    <link rel="alternate" hreflang="x-default" href={enUrl} />
+    {enUrl && <link rel="alternate" hreflang="x-default" href={enUrl} />}
 
     {/* OpenGraph (Webflow used "copy SEO title/description" — same here). */}
     <meta property="og:type" content={ogType} />
