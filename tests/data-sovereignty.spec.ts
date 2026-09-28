@@ -136,7 +136,9 @@ test.describe('/solutions/data-sovereignty', () => {
       await page.goto(path);
 
       const visible = (await page.locator('.dsov-faq__question').allTextContents()).map((t) => t.trim());
-      expect(visible.length, 'nine FAQ items are rendered').toBe(9);
+      // English also carries "Can I keep user data in the UK?"; the other
+      // markets are asking about the EU, so they show eight.
+      expect(visible.length, 'every FAQ item is rendered').toBe(lang === 'en' ? 9 : 8);
 
       const faq = await page.locator('script[type="application/ld+json"]').evaluateAll((els) => {
         for (const el of els) {
@@ -176,6 +178,16 @@ test.describe('/solutions/data-sovereignty', () => {
     expect(questions[1]).toContain('data residency and data sovereignty');
     expect(questions[2]).toContain('CLOUD Act');
     expect(questions[3]).toContain('keep user data in the UK');
+  });
+
+  test('the UK data question is English only', async ({ page }) => {
+    for (const { lang, path } of LOCALE_PATHS.filter((l) => l.lang !== 'en')) {
+      await page.goto(path);
+      const questions = await page.locator('.dsov-faq__question').allTextContents();
+      expect(questions.join(' '), `${lang} asks the UK data question`).not.toMatch(
+        /Nutzerdaten in Großbritannien|datos de usuarios en el Reino Unido|données utilisateurs au Royaume-Uni|用戶資料留在英國/,
+      );
+    }
   });
 
   test('the UK company card no longer claims support stays in Europe', async ({ page }) => {

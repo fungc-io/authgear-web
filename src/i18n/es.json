@@ -322,8 +322,6 @@
     "faq3APre": "Depende de quién custodie los datos. Si autoalojas Authgear en un proveedor británico o de la UE, o ejecutas allí una nube privada, ninguna empresa estadounidense custodia los datos de tus usuarios. ",
     "faq3ALink": "Más sobre la CLOUD Act",
     "faq3APost": "",
-    "faq4Q": "¿Puedo mantener los datos de usuarios en el Reino Unido?",
-    "faq4A": "Sí. Autoaloja Authgear en infraestructura británica, o elige la nube privada y nosotros operamos un despliegue dedicado para ti en una región del Reino Unido.",
     "faq5Q": "¿Dónde se almacenan mis datos en Authgear Cloud?",
     "faq5APre": "En Estados Unidos o Hong Kong. Eliges la región al crear un proyecto. Todavía no ofrecemos una región UE, así que ",
     "faq5ALink": "únete a la lista de espera",

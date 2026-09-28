@@ -322,8 +322,6 @@
     "faq3APre": "Das hängt davon ab, wer die Daten hält. Wenn Sie Authgear selbst bei einem britischen oder EU-Anbieter hosten oder dort eine Private Cloud betreiben, hält kein US-Unternehmen die Daten Ihrer Nutzer. ",
     "faq3ALink": "Mehr zum CLOUD Act",
     "faq3APost": "",
-    "faq4Q": "Kann ich Nutzerdaten in Großbritannien halten?",
-    "faq4A": "Ja. Hosten Sie Authgear selbst auf britischer Infrastruktur, oder wählen Sie Private Cloud und wir betreiben eine dedizierte Bereitstellung für Sie in einer britischen Region.",
     "faq5Q": "Wo werden meine Daten in Authgear Cloud gespeichert?",
     "faq5APre": "In den USA oder in Hongkong. Sie wählen die Region beim Anlegen eines Projekts. Eine EU-Region bieten wir noch nicht an. Wenn Sie eine brauchen, ",
     "faq5ALink": "tragen Sie sich in die Warteliste ein",

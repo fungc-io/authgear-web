@@ -68,7 +68,10 @@ const faqItems: { q: string; answer: FaqSegment[] }[] = [
       T('faq3APost'),
     ],
   },
-  { q: T('faq4Q'), answer: [T('faq4A')] },
+  // "Can I keep user data in the UK?" answers a UK reader. The other markets
+  // are asking about the EU, so the question is English only and faq4Q/faq4A
+  // exist in en.json alone.
+  ...(locale === 'en' ? [{ q: T('faq4Q'), answer: [T('faq4A')] }] : []),
   { q: T('faq5Q'), answer: [T('faq5APre'), { text: T('faq5ALink'), href: '#waitlist' }, T('faq5APost')] },
   { q: T('faq6Q'), answer: [T('faq6A')] },
   {
