@@ -5,6 +5,9 @@ const PORT = 4321;
 export default defineConfig({
   testDir: './tests',
   timeout: 30_000,
+  // One timing flake should not redden a whole run of 200+ browser tests. Local
+  // runs keep 0 retries so a flake is visible while you work on it.
+  retries: process.env.CI ? 2 : 0,
   use: {
     baseURL: `http://localhost:${PORT}`,
     trace: 'retain-on-failure',

@@ -28,6 +28,10 @@ test.describe('home page parity — islands hydrate', () => {
     // IntersectionObserver fires before we try to interact.
     await nameInput.scrollIntoViewIfNeeded();
     await expect(nameInput).toBeVisible();
+    // `toBeVisible()` passes on the server-rendered input, before React has
+    // hydrated; filling then is wiped by the first client render. Astro drops the
+    // `ssr` attribute once the island has hydrated, so wait for that first.
+    await page.locator('astro-island:not([ssr]):has(input[name="Name"])').waitFor();
     await nameInput.fill('Hydration Test');
     await expect(nameInput).toHaveValue('Hydration Test');
   });
