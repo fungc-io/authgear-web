@@ -9,7 +9,7 @@
     "build": "astro build",
     "preview": "astro dev --host 0.0.0.0",
     "check": "astro check",
-    "pretest": "npm run build && (astro dev stop > /dev/null 2>&1 || true) && PUBLIC_GTM_ID=GTM-TEST0000 astro dev --port 4321 --host 0.0.0.0",
+    "pretest": "npm run build && if [ -z \"$CI\" ]; then (astro dev stop > /dev/null 2>&1 || true) && PUBLIC_GTM_ID=GTM-TEST0000 astro dev --port 4321 --host 0.0.0.0; fi",
     "test": "playwright test",
     "posttest": "if [ -z \"$CI\" ]; then (astro dev stop > /dev/null 2>&1 || true) && npm run dev; fi",
     "test:unit": "vitest run",

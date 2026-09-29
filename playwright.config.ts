@@ -25,14 +25,15 @@ export default defineConfig({
     // server started before the build serves stale pages and skips the
     // redirect rules entirely. `posttest` then restores a clean dev server.
     //
-    // `reuseExistingServer` is always on because Astro runs `astro dev` as a
-    // background daemon: the foreground process exits immediately, which
-    // Playwright would report as "Process from config.webServer exited early"
-    // if it tried to manage the server itself. The command below is only a
-    // fallback for when nothing is listening yet.
+    // Locally, `pretest` has already started the server, so reuse it: Astro
+    // runs `astro dev` as a background daemon, and the foreground process
+    // exiting immediately would otherwise read as "Process from
+    // config.webServer exited early". In CI nothing is listening and `astro
+    // dev` blocks in the foreground, so Playwright manages the server itself,
+    // exactly as it did before.
     command: `PUBLIC_GTM_ID=GTM-TEST0000 astro dev --port ${PORT}`,
     url: `http://localhost:${PORT}`,
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },
 });
