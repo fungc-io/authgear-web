@@ -31,9 +31,9 @@ jobs:
         run: npm run test:unit
 
       - name: Production build
-        # Also a prerequisite for the e2e step: the Netlify dev emulation
-        # loads _redirects and header rules from the publish dir (dist/),
-        # so redirect/header tests silently lose coverage without a build.
+        # `npm test` builds again in its pretest, which is what the e2e step
+        # actually relies on; this step keeps a build failure reported on its
+        # own line rather than buried in the test output.
         run: npm run build
 
       - name: Install Playwright browsers
