@@ -1,10 +1,12 @@
 ---
 import '@/styles/global.css';
 import SiteNav from '@/components/nav/SiteNav.astro';
+import TopBar from '@/components/nav/TopBar.astro';
 import SiteFooter from '@/components/nav/SiteFooter.astro';
 import CookieConsentBanner from '@/components/CookieConsentBanner.astro';
 import { LOCALES, localeAlternates, localeToHtmlLang, localeUrlSegment, stripLocaleSegment, type Locale } from '@/lib/i18n';
 import { t } from '@/i18n';
+import { announcementFor } from '@/lib/announcement';
 
 interface Props {
   locale: string;
@@ -53,6 +55,11 @@ const canonical = canonicalProp ?? urlFor(LOCALES.includes(locale as Locale) ? l
 const OG_LOCALES: Record<string, string> = { en: 'en_US', 'zh-Hant': 'zh_TW', ja: 'ja_JP', es: 'es_ES', de: 'de_DE', fr: 'fr_FR' };
 const ogLocale = OG_LOCALES[locale] ?? 'en_US';
 const ogLocaleAlternate = locale === 'en' ? 'zh_TW' : 'en_US';
+// The top bar adds to the fixed banner height, which pages offset against
+// via --layout-fixed-header-height. Flagged on <html> so the token only moves
+// when the bar is actually there.
+const hasTopBar = announcementFor(locale) !== null;
+
 const gtmId = import.meta.env.PUBLIC_GTM_ID ?? '';
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN ?? '';
 const googleSiteVerification = import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION ?? '';
@@ -69,7 +76,7 @@ const fontsUrl = `https://fonts.googleapis.com/css2?${fontFamilies.map((f) => `f
 ---
 
 <!doctype html>
-<html lang={htmlLang} data-theme={theme === 'dark' ? 'dark' : undefined}>
+<html lang={htmlLang} data-theme={theme === 'dark' ? 'dark' : undefined} data-topbar={hasTopBar ? '' : undefined}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -155,6 +162,7 @@ const fontsUrl = `https://fonts.googleapis.com/css2?${fontFamilies.map((f) => `f
     )}
 
     <div role="banner" class:list={["header event", { "header--dark": theme === "dark" }]}>
+      <TopBar locale={locale} theme={theme} />
       <SiteNav locale={locale} theme={theme} />
     </div>
 

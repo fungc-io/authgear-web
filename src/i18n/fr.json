@@ -6,10 +6,9 @@
     "resources": "Ressources",
     "developers": "Développeurs",
     "pricing": "Tarifs",
-    "loginMobile": "Connexion",
-    "signupMobile": "Inscription",
     "getDemo": "Demander une démo",
-    "signupLogin": "Inscription/Connexion",
+    "signup": "S'inscrire",
+    "login": "Connexion",
     "menuToggleLabel": "Ouvrir le menu",
     "githubStar": "Star",
     "githubStarLabel": "Ajouter une étoile à Authgear sur GitHub"

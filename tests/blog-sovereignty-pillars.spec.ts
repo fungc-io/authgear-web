@@ -75,7 +75,7 @@ for (const post of POSTS) {
 
     test('footer switcher offers no other language', async ({ page }) => {
       await page.goto(post.url);
-      const opts = page.locator('footer .ds-footer-lang-switcher__option');
+      const opts = page.locator('footer .ds-lang-switcher__option');
       await expect(opts).toHaveCount(1);
       await expect(opts.first()).toHaveAttribute('href', post.url);
     });

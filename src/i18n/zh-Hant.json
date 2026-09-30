@@ -14,10 +14,9 @@
     "resources": "資源",
     "developers": "開發者",
     "pricing": "定價",
-    "loginMobile": "登入",
-    "signupMobile": "註冊",
     "getDemo": "預約示範",
-    "signupLogin": "註冊／登入",
+    "signup": "免費註冊",
+    "login": "登入",
     "menuToggleLabel": "開啟選單",
     "githubStar": "Star",
     "githubStarLabel": "在 GitHub 上為 Authgear 加星"

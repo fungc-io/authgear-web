@@ -6,10 +6,9 @@
     "resources": "リソース",
     "developers": "開発者",
     "pricing": "料金",
-    "loginMobile": "ログイン",
-    "signupMobile": "サインアップ",
     "getDemo": "デモを依頼",
-    "signupLogin": "サインアップ／ログイン",
+    "signup": "無料で始める",
+    "login": "ログイン",
     "menuToggleLabel": "メニューを開く",
     "githubStar": "Star",
     "githubStarLabel": "GitHub で Authgear にスターを付ける"

@@ -1,0 +1,243 @@
+---
+import { t } from '@/i18n';
+import { announcementFor } from '@/lib/announcement';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+interface Props {
+  locale: string;
+  /** Colour scheme, mirroring SiteNav. Same markup either way. */
+  theme?: 'light' | 'dark';
+}
+
+const { locale, theme = 'light' } = Astro.props;
+const dark = theme === 'dark';
+const news = announcementFor(locale);
+---
+
+{news && (
+  <div class:list={['top-bar', { 'top-bar--dark': dark }]}>
+    <div class="top-bar__inner">
+      {/* The whole line is the link, headline included — the call to action
+          is a span inside it rather than the only clickable target. */}
+      <a
+        href={news.href}
+        class="top-bar__news plausible-event-name--announcement plausible-event-location--top-bar"
+      >
+        <span class="top-bar__news-text">{news.text}</span>
+        <span class="top-bar__news-link">
+          {news.cta}
+          <span aria-hidden="true">&nbsp;→</span>
+        </span>
+      </a>
+
+      <div class="top-bar__actions">
+        <a
+          href="https://portal.authgear.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="top-bar__login plausible-event-name--login plausible-event-location--top-bar"
+        >
+          {t(locale, 'Navigation.login')}
+        </a>
+        <LanguageSwitcher locale={locale} variant="topbar" />
+      </div>
+    </div>
+  </div>
+)}
+
+<style is:global>
+  /* The strip above the nav: one line of news, plus Login and the language
+     switcher. It lives inside the fixed [role="banner"], so the mobile drawer,
+     which measures that banner when it opens, clears it without being told.
+
+     Pages are a different matter: the banner is position: fixed and takes no
+     space in the flow, so they offset their first section by
+     --layout-fixed-header-height. That is declared as 5rem in
+     authgear-design-system.css inside @layer base, which an unlayered rule
+     here beats whatever its specificity. BaseLayout sets [data-topbar] on
+     <html> only when the announcement renders, so switching the bar off in
+     src/lib/announcement.ts gives the height back. */
+  /* The bar's own height, measured in the browser and rounded up: the 40px
+     inner plus its 1px bottom border, and on mobile two lines of 13px/1.4
+     text instead of one. The nav below it is 5rem (.container-header's
+     min-height), so the two together are what a page has to clear. */
+  :root[data-topbar] {
+    --layout-top-bar-height: 42px;
+    --layout-fixed-header-height: calc(5rem + var(--layout-top-bar-height));
+  }
+  @media (max-width: 991px) {
+    :root[data-topbar] {
+      --layout-top-bar-height: 46px;
+    }
+  }
+
+  .top-bar {
+    /* Above the nav's dropdown wrappers (`z-index: 900`), so the language
+       menu is not painted behind them. */
+    position: relative;
+    z-index: 901;
+    background-color: #f5f7fb;
+    border-bottom: 1px solid #e4e8f0;
+    color: #3e4f6f;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+  }
+  .top-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    /* Matches .container-header, so the news lines up with the logo. */
+    max-width: 1271px;
+    min-height: 40px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* One line, never two: a long headline is cut off rather than allowed to
+     change the bar's height, which the page offsets are measured against. */
+  .top-bar__news {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    min-width: 0;
+    margin: 0;
+    color: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    text-decoration: none;
+    transition: color 0.18s ease;
+  }
+  .top-bar__news:hover {
+    color: var(--primary-1, #0043e0);
+  }
+  .top-bar__news-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .top-bar__news-link {
+    flex: 0 0 auto;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    white-space: nowrap;
+  }
+
+  .top-bar__actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 0 0 auto;
+  }
+  .top-bar__login {
+    padding: 4px 8px;
+    border-radius: 6px;
+    color: inherit;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.18s ease;
+  }
+  .top-bar__login:hover {
+    color: var(--primary-1, #0043e0);
+  }
+  .top-bar__login:focus-visible,
+  .top-bar__news:focus-visible {
+    outline: 2px solid var(--primary-1, #0043e0);
+    outline-offset: 2px;
+  }
+
+  /* Language switcher, top-bar variant: no pill outline, menu drops down. */
+  .ds-lang-switcher--topbar .ds-lang-switcher__btn {
+    padding: 4px 8px;
+    color: inherit;
+  }
+  .ds-lang-switcher--topbar .ds-lang-switcher__btn:hover {
+    color: var(--primary-1, #0043e0);
+  }
+  .ds-lang-switcher--topbar .ds-lang-switcher__dropdown {
+    top: calc(100% + 6px);
+    right: 0;
+    background: #fff;
+    border: 1px solid #e4e8f0;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+  }
+  .ds-lang-switcher--topbar .ds-lang-switcher__option {
+    color: #3e4f6f;
+  }
+  .ds-lang-switcher--topbar .ds-lang-switcher__option:hover {
+    background-color: #f0f3f9;
+    color: #0f172a;
+    text-decoration: none;
+  }
+  .ds-lang-switcher--topbar .ds-lang-switcher__option--active {
+    color: #0f172a;
+    font-weight: 500;
+  }
+
+  /* Dark pages: a shade below the nav's #0e0f28 so the two bars read as
+     separate bands rather than one block. */
+  .top-bar--dark {
+    background-color: #08091c;
+    border-bottom-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .top-bar--dark .top-bar__news:hover,
+  .top-bar--dark .top-bar__login:hover,
+  .top-bar--dark .ds-lang-switcher--topbar .ds-lang-switcher__btn:hover {
+    color: #fff;
+  }
+  .top-bar--dark .ds-lang-switcher--topbar .ds-lang-switcher__dropdown {
+    background: #151633;
+    border-color: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+  }
+  .top-bar--dark .ds-lang-switcher--topbar .ds-lang-switcher__option {
+    color: rgba(255, 255, 255, 0.72);
+  }
+  .top-bar--dark .ds-lang-switcher--topbar .ds-lang-switcher__option:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #fff;
+  }
+  .top-bar--dark .ds-lang-switcher--topbar .ds-lang-switcher__option--active {
+    color: #fff;
+  }
+
+  /* Phones and tablets: the news alone. Login and the language switcher move
+     into the nav drawer (see SiteNav), where there is room to label them. */
+  @media (max-width: 991px) {
+    .top-bar__actions {
+      display: none;
+    }
+    .top-bar__inner {
+      /* Two lines of 13px/1.4 text plus the vertical padding. Fixed rather
+         than content-sized: the banner is position: fixed, so this height is
+         what --layout-fixed-header-height above has to reserve, and a bar
+         that changed height with the length of the announcement would leave
+         that reservation wrong. A one-line announcement sits centred in it. */
+      min-height: 44px;
+      padding: 4px 21px;
+      font-size: 13px;
+    }
+    /* Text and call to action flow as one inline run and wrap together,
+       clamped at two lines — the headline no longer gets cut mid-word. */
+    .top-bar__news {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      overflow: hidden;
+      gap: 0;
+    }
+    .top-bar__news-text {
+      overflow: visible;
+      white-space: normal;
+      text-overflow: clip;
+    }
+    .top-bar__news-link {
+      margin-left: 8px;
+    }
+  }
+</style>

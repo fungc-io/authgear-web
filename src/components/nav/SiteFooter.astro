@@ -2,7 +2,7 @@
 import { localizedPath } from '@/lib/i18n';
 import { footerStrings } from '@/lib/navigation-data';
 import { localizedString } from '@/lib/site-navigation';
-import FooterLanguageSwitcher from './FooterLanguageSwitcher.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 
 interface Props {
   locale: string;
@@ -434,7 +434,7 @@ const poweredSuffix = L('poweredBySuffix');
             {L('cookieSettings')}
           </button>
         </div>
-        <FooterLanguageSwitcher locale={locale} />
+        <LanguageSwitcher locale={locale} variant="footer" />
       </div>
     </div>
   </div>
