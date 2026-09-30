@@ -1,0 +1,134 @@
+---
+import { localeAlternates, localeUrlSegment, stripLocaleSegment } from '@/lib/i18n';
+
+interface Props {
+  locale: string;
+  currentPath?: string;
+  /** Where this instance sits. Only colours and popup direction differ. */
+  variant?: 'footer' | 'topbar' | 'drawer';
+}
+
+const { locale, currentPath = Astro.url.pathname, variant = 'footer' } = Astro.props;
+
+const LOCALE_LABELS: Record<string, string> = {
+  en: 'English',
+  'zh-Hant': '中文',
+  ja: '日本語',
+  es: 'Español',
+  de: 'Deutsch',
+  fr: 'Français',
+};
+
+const basePath = stripLocaleSegment(currentPath);
+
+// Locales offered as switch-TO targets. Partial locales appear only on the
+// pages they translate, so the switcher never sends anyone to a URL that would
+// redirect back to English. Each target brings its own path, since a
+// market-specific page carries a different slug per locale.
+const SWITCHABLE_LOCALES = localeAlternates(basePath);
+const currentLabel = LOCALE_LABELS[locale] ?? 'Language';
+---
+
+<div class:list={['ds-lang-switcher', `ds-lang-switcher--${variant}`]} data-lang-switcher>
+  <button type="button" class="ds-lang-switcher__btn" aria-expanded="false" aria-haspopup="listbox" data-lang-btn>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="ds-lang-switcher__icon"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+    </svg>
+    <span>{currentLabel}</span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="ds-lang-switcher__chevron"
+      width="20"
+      height="20"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      aria-hidden="true"
+      data-lang-chevron
+    >
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  </button>
+  <ul class="ds-lang-switcher__dropdown" role="listbox" hidden data-lang-dropdown>
+    {SWITCHABLE_LOCALES.map(({ locale: l, path }) => (
+      <li role="option" aria-selected={l === locale}>
+        <a
+          href={`${localeUrlSegment(l)}${path}`}
+          class={`ds-lang-switcher__option${l === locale ? ' ds-lang-switcher__option--active' : ''}`}
+        >
+          {LOCALE_LABELS[l]}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  // One handler for every instance on the page — the footer, the top bar and
+  // the mobile drawer each render their own. Scoped by element rather than by
+  // id so the same markup can appear more than once.
+  (() => {
+    const switchers = Array.from(
+      document.querySelectorAll<HTMLElement>('[data-lang-switcher]'),
+    );
+    if (switchers.length === 0) return;
+
+    const closeAll = (except?: HTMLElement) => {
+      for (const root of switchers) {
+        if (root === except) continue;
+        const btn = root.querySelector<HTMLButtonElement>('[data-lang-btn]');
+        const dropdown = root.querySelector<HTMLElement>('[data-lang-dropdown]');
+        const chevron = root.querySelector<SVGElement>('[data-lang-chevron]');
+        if (!btn || !dropdown) continue;
+        dropdown.hidden = true;
+        btn.setAttribute('aria-expanded', 'false');
+        chevron?.classList.remove('ds-lang-switcher__chevron--open');
+      }
+    };
+
+    for (const root of switchers) {
+      const btn = root.querySelector<HTMLButtonElement>('[data-lang-btn]');
+      const dropdown = root.querySelector<HTMLElement>('[data-lang-dropdown]');
+      const chevron = root.querySelector<SVGElement>('[data-lang-chevron]');
+      if (!btn || !dropdown) continue;
+
+      btn.addEventListener('click', () => {
+        const opening = dropdown.hidden;
+        closeAll(root);
+        dropdown.hidden = !opening;
+        btn.setAttribute('aria-expanded', opening ? 'true' : 'false');
+        chevron?.classList.toggle('ds-lang-switcher__chevron--open', opening);
+      });
+    }
+
+    document.addEventListener('mousedown', (event) => {
+      const target = event.target as Node | null;
+      const inside = target
+        ? switchers.find((root) => root.contains(target))
+        : undefined;
+      // A click inside one switcher leaves it alone (its own click handler
+      // toggles it) but still closes the others.
+      closeAll(inside);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeAll();
+    });
+  })();
+</script>

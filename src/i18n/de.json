@@ -6,10 +6,9 @@
     "resources": "Ressourcen",
     "developers": "Entwickler",
     "pricing": "Preise",
-    "loginMobile": "Anmelden",
-    "signupMobile": "Registrieren",
     "getDemo": "Demo anfragen",
-    "signupLogin": "Registrieren/Anmelden",
+    "signup": "Registrieren",
+    "login": "Anmelden",
     "menuToggleLabel": "Menü öffnen",
     "githubStar": "Star",
     "githubStarLabel": "Authgear auf GitHub mit einem Stern markieren"

@@ -12,6 +12,7 @@ import {
 import Button from './Button.astro';
 import { GITHUB_REPO, GITHUB_REPO_URL, getGithubStars, formatStars } from '@/lib/github-stars';
 import NavDropdown from './NavDropdown.astro';
+import LanguageSwitcher from './LanguageSwitcher.astro';
 import SolutionsNavIcons from './SolutionsNavIcons.astro';
 import ResourcesDevelopersNavIcons from './ResourcesDevelopersNavIcons.astro';
 
@@ -201,6 +202,20 @@ const sideAlt = solutionsSideImage.alt[locale] ?? solutionsSideImage.alt['en'] ?
         {t(locale, 'Navigation.getDemo')}
       </Button>
     </div>
+
+    {/* Login and the language switcher live in the top bar on desktop; at
+        mobile that bar carries the news alone and these move down here. */}
+    <div class="mobile-nav-utilities">
+      <a
+        href="https://portal.authgear.com/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mobile-nav-login plausible-event-name--login plausible-event-location--nav-drawer"
+      >
+        {t(locale, 'Navigation.login')}
+      </a>
+      <LanguageSwitcher locale={locale} variant="drawer" />
+    </div>
   </nav>
 
   <div class="split-content header-right">
@@ -222,11 +237,11 @@ const sideAlt = solutionsSideImage.alt[locale] ?? solutionsSideImage.alt['en'] ?
       href="https://portal.authgear.com/"
       target="_blank"
       variant="primary"
-      plausibleEvent="signup-login"
+      plausibleEvent="signup"
       plausibleLocation="nav-header"
       class="header-button"
     >
-      {t(locale, 'Navigation.signupLogin')}
+      {t(locale, 'Navigation.signup')}
     </Button>
     <Button
       href={localizedPath(locale, '/schedule-demo')}
@@ -377,6 +392,12 @@ const sideAlt = solutionsSideImage.alt[locale] ?? solutionsSideImage.alt['en'] ?
     }
   }
 
+  /* Drawer-only row: Login plus the language switcher, which sit in the top
+     bar at desktop widths. Hidden above 991px, where the drawer never opens. */
+  .mobile-nav-utilities {
+    display: none;
+  }
+
   .site-nav-toggle {
     display: none;
     position: relative;
@@ -490,6 +511,55 @@ const sideAlt = solutionsSideImage.alt[locale] ?? solutionsSideImage.alt['en'] ?
     .nav-menu[data-site-nav-panel][data-site-nav-open] {
       display: block !important;
     }
+
+    .mobile-nav-utilities {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid #e4e8f0;
+      /* Each collapsed section above is its own `z-index: 900` stacking
+         context (.nav-menu-dropdown), so without this the language menu
+         opens behind their chevrons. */
+      position: relative;
+      z-index: 901;
+    }
+    .mobile-nav-login {
+      color: #3e4f6f;
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 24px;
+      text-decoration: none;
+    }
+    .ds-lang-switcher--drawer .ds-lang-switcher__btn {
+      border-color: #e4e8f0;
+      color: #3e4f6f;
+      font-size: 16px;
+    }
+    /* Opens upward: the row sits at the bottom of a drawer that can already
+       be scrolled to its end. */
+    .ds-lang-switcher--drawer .ds-lang-switcher__dropdown {
+      bottom: calc(100% + 0.5rem);
+      right: 0;
+      background: #fff;
+      border: 1px solid #e4e8f0;
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.14);
+    }
+    .ds-lang-switcher--drawer .ds-lang-switcher__option {
+      color: #3e4f6f;
+    }
+    .ds-lang-switcher--drawer .ds-lang-switcher__option:hover {
+      background-color: #f0f3f9;
+      color: #0f172a;
+      text-decoration: none;
+    }
+    .ds-lang-switcher--drawer .ds-lang-switcher__option--active {
+      color: #0f172a;
+      font-weight: 500;
+    }
   }
 
   /* Dark colour scheme, opted into per page through BaseLayout's theme
@@ -569,6 +639,31 @@ const sideAlt = solutionsSideImage.alt[locale] ?? solutionsSideImage.alt['en'] ?
     .nav--dark .dropdown-toggle,
     .nav--dark .nav-item-wrapper {
       border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    .nav--dark .mobile-nav-utilities {
+      border-top-color: rgba(255, 255, 255, 0.1);
+    }
+    .nav--dark .mobile-nav-login,
+    .nav--dark .ds-lang-switcher--drawer .ds-lang-switcher__btn {
+      color: rgba(255, 255, 255, 0.86);
+    }
+    .nav--dark .ds-lang-switcher--drawer .ds-lang-switcher__btn {
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+    .nav--dark .ds-lang-switcher--drawer .ds-lang-switcher__dropdown {
+      background: #1a1a2e;
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+    }
+    .nav--dark .ds-lang-switcher--drawer .ds-lang-switcher__option {
+      color: rgba(255, 255, 255, 0.72);
+    }
+    .nav--dark .ds-lang-switcher--drawer .ds-lang-switcher__option:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: #fff;
+    }
+    .nav--dark .ds-lang-switcher--drawer .ds-lang-switcher__option--active {
+      color: #fff;
     }
   }
 </style>

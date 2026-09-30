@@ -14,10 +14,9 @@
     "resources": "Resources",
     "developers": "Developers",
     "pricing": "Pricing",
-    "loginMobile": "Login",
-    "signupMobile": "Signup",
     "getDemo": "Get a Demo",
-    "signupLogin": "Signup/Login",
+    "signup": "Sign up",
+    "login": "Login",
     "menuToggleLabel": "Open menu",
     "githubStar": "Star",
     "githubStarLabel": "Star Authgear on GitHub"
