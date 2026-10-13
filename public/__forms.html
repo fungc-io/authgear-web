@@ -27,6 +27,45 @@
     <input type="text" name="website" />
   </form>
 
+  <!--
+    /help-desk SaaS support form, migrated from the Notion "Authgear Help Desk"
+    form. Field names are short and locale-neutral; they map to the Notion
+    columns as follows:
+
+      purpose             → What is the purpose of your enquiry?
+      project-name        → What is your Authgear project name?
+      company             → What is your company name?
+      company-website     → What is the website of your company?
+      project-description → Please describe your project
+      target-users        → Where are your target users based in?
+      name                → What is your name?
+      email               → What is your email address?
+      phone               → What is your phone number?
+      notes               → Is there other things regarding your enquiry we should know about?
+
+    `purpose` is a single choice and arrives as the option's label, not its
+    slug. Keep in sync with src/components/islands/HelpDeskForm.tsx.
+  -->
+  <form name="help-desk" method="POST" data-netlify="true" netlify-honeypot="website" hidden>
+    <input type="text" name="purpose" />
+    <input type="text" name="project-name" />
+    <input type="text" name="company" />
+    <input type="url" name="company-website" />
+    <textarea name="project-description"></textarea>
+    <input type="text" name="target-users" />
+    <input type="text" name="name" />
+    <input type="email" name="email" />
+    <input type="tel" name="phone" />
+    <textarea name="notes"></textarea>
+    <input type="text" name="utm_source" />
+    <input type="text" name="utm_medium" />
+    <input type="text" name="utm_campaign" />
+    <input type="text" name="page" />
+    <input type="text" name="locale" />
+    <input type="text" name="source" />
+    <input type="text" name="website" />
+  </form>
+
   <!-- /success-stories-download lead-magnet form. Single email field. -->
   <form name="success-stories-download" method="POST" data-netlify="true" netlify-honeypot="website" hidden>
     <input type="email" name="Email" />

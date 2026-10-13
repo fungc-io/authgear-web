@@ -1,0 +1,24 @@
+---
+import HelpDeskForm from '@/components/islands/HelpDeskForm';
+
+/**
+ * Authgear Help Desk — the SaaS support request form, linked from the portal.
+ * Orphan page: not in the nav, not in the sitemap, English only, so the copy
+ * lives here rather than in the locale JSON files.
+ */
+---
+
+<div class="page-wrapper">
+  <section class="help-desk-page">
+    <div class="help-desk">
+      <a href="/" class="help-desk__brand">
+        <img src="/images/authgear-logo.svg" alt="Authgear" class="help-desk__logo" />
+      </a>
+      <h1 class="help-desk__title">Authgear Help Desk</h1>
+      <p class="help-desk__lede">
+        Tell us about your project and what you need, and our support team will take it from there.
+      </p>
+      <HelpDeskForm client:load />
+    </div>
+  </section>
+</div>

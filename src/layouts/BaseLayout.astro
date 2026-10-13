@@ -18,6 +18,12 @@ interface Props {
   /** Page colour scheme. 'dark' gives the nav its dark styling and paints the
       document canvas navy, so over-scroll bounce never shows a light gap. */
   theme?: 'light' | 'dark';
+  /** Keep the page out of search results. For orphan pages that are linked
+      from elsewhere (the portal, an email) and have no business ranking. */
+  noindex?: boolean;
+  /** Drop the site nav and footer, leaving just the page body. For standalone
+      pages reached from another product, where the marketing chrome is noise. */
+  bare?: boolean;
 }
 
 const { locale } = Astro.props;
@@ -28,6 +34,8 @@ const {
   ogType = 'website',
   twitterCard = 'summary',
   theme = 'light',
+  noindex = false,
+  bare = false,
 } = Astro.props;
 
 const htmlLang = localeToHtmlLang(locale);
@@ -58,7 +66,7 @@ const ogLocaleAlternate = locale === 'en' ? 'zh_TW' : 'en_US';
 // The top bar adds to the fixed banner height, which pages offset against
 // via --layout-fixed-header-height. Flagged on <html> so the token only moves
 // when the bar is actually there.
-const hasTopBar = announcementsFor(locale).length > 0;
+const hasTopBar = !bare && announcementsFor(locale).length > 0;
 
 const gtmId = import.meta.env.PUBLIC_GTM_ID ?? '';
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN ?? '';
@@ -85,6 +93,7 @@ const fontsUrl = `https://fonts.googleapis.com/css2?${fontFamilies.map((f) => `f
     )}
     <title>{title}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
 
     <link rel="canonical" href={canonical} />
     {alternateLocales.map(({ locale: loc, path }) => (
@@ -161,18 +170,22 @@ const fontsUrl = `https://fonts.googleapis.com/css2?${fontFamilies.map((f) => `f
       </noscript>
     )}
 
-    <div role="banner" class:list={["header event", { "header--dark": theme === "dark" }]}>
-      <TopBar locale={locale} theme={theme} />
-      <SiteNav locale={locale} theme={theme} />
-    </div>
+    {!bare && (
+      <div role="banner" class:list={["header event", { "header--dark": theme === "dark" }]}>
+        <TopBar locale={locale} theme={theme} />
+        <SiteNav locale={locale} theme={theme} />
+      </div>
+    )}
 
     <main>
       <slot />
     </main>
 
-    <footer class="footer dark">
-      <SiteFooter locale={locale} />
-    </footer>
+    {!bare && (
+      <footer class="footer dark">
+        <SiteFooter locale={locale} />
+      </footer>
+    )}
 
     {gtmId && <CookieConsentBanner locale={locale} />}
   </body>
