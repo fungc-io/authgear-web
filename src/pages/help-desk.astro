@@ -1,0 +1,20 @@
+---
+export const prerender = true;
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import HelpDeskPage from '@/components/pages/HelpDeskPage.astro';
+
+// Orphan page: reached from a link in the Authgear portal, never from the
+// site nav. Kept out of the sitemap (astro.config.mjs) and out of the index
+// (`noindex` below) so it does not compete with the marketing pages.
+const locale = 'en';
+---
+
+<BaseLayout
+  locale={locale}
+  title="Authgear Help Desk"
+  description="Submit a support request for your Authgear project."
+  noindex
+  bare
+>
+  <HelpDeskPage />
+</BaseLayout>

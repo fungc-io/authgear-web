@@ -45,7 +45,7 @@ const PARTIAL_LOCALE_PATH_PREFIXES = ['/tools/'] as const;
  * page through `PARTIAL_LOCALE_EXTRA_PATHS`. Keep in sync with `src/pages/`;
  * `i18n.test.ts` checks each entry against disk.
  */
-export const NO_ZH_HANT_PATHS: readonly string[] = ['/dpa/', '/sub-processors/', '/compare/keycloak-alternative/'];
+export const NO_ZH_HANT_PATHS: readonly string[] = ['/dpa/', '/sub-processors/', '/compare/keycloak-alternative/', '/help-desk/'];
 
 /**
  * Paths translated for some partial locales but not all of them. Each entry

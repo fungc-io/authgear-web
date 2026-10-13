@@ -21,7 +21,9 @@ export default defineConfig({
       // Drop /en/* internal routes (canonical English paths are unprefixed).
       // All legacy redirects now live in public/_redirects, so they aren't
       // prerendered and will never appear in the sitemap to begin with.
-      filter: (page) => !page.includes('/en/'),
+      // /help-desk/ is an orphan page linked only from the portal — it is
+      // served `noindex`, so keep it out of the sitemap too.
+      filter: (page) => !page.includes('/en/') && !page.includes('/help-desk/'),
     }),
   ],
   vite: { plugins: [tailwindcss()] },
