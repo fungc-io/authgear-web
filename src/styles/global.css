@@ -82,6 +82,9 @@
 }
 .legal-content {
   max-width: 760px;
+  /* .ds-container is a flex box: without a width, a wide table sizes this
+     column to 760px on a phone instead of scrolling inside itself. */
+  width: 100%;
   margin-inline: auto;
   color: var(--color-text-light-primary);
   font-family: var(--font-sans);
@@ -156,6 +159,11 @@
   font-weight: 600;
   color: var(--color-text-light-primary);
   white-space: nowrap;
+}
+.legal-content .ds-richtext-prose table tbody th,
+.legal-content .ds-richtext-prose table.legal-table--wrap th {
+  white-space: normal;
+  min-width: 8rem;
 }
 .legal-content .ds-richtext-prose table tbody tr:nth-child(even) {
   background-color: rgba(0, 0, 0, 0.015);

@@ -1,10 +1,12 @@
 ---
 import LegalPageLayout from '@/components/legal/LegalPageLayout.astro';
+import { localizedPath } from '@/lib/i18n';
 interface Props { locale: string }
 const { locale } = Astro.props;
 ---
 <LegalPageLayout title="Service Level Agreement" locale={locale}>
   <p>We understand that service interruptions hinder productivity and disrupt your operation.</p>
+  <p>For support response times and what support covers, see our <a href={localizedPath(locale, '/support-policy')}>Statement of Support</a>.</p>
   <p>We've set a high bar for service uptime because we believe that you should be able to depend on Authgear and run your business without hassles.</p>
 
   <h2>The Basics</h2>

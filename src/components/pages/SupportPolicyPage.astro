@@ -1,0 +1,262 @@
+---
+import LegalPageLayout from '@/components/legal/LegalPageLayout.astro';
+import { localizedPath } from '@/lib/i18n';
+interface Props { locale: string }
+const { locale } = Astro.props;
+const slaHref = localizedPath(locale, '/sla');
+---
+<LegalPageLayout title="Statement of Support" eyebrow="Support" locale={locale}>
+  <p>This page explains what Authgear Support covers, how fast we respond, and what we do when a request is outside Support. It applies to every Authgear plan and to every deployment, whether we host Authgear for you or you run it yourself.</p>
+  <p>For uptime commitments, see our <a href={slaHref}>Service Level Agreement</a>.</p>
+
+  <h2>In one sentence</h2>
+  <p><strong>If Authgear is broken, it's Support. If your code or your setup needs our engineers, it's Expert Hours.</strong></p>
+
+  <h2>Support plans</h2>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col"><span class="sr-only">Support plan</span></th>
+        <th scope="col">Community</th>
+        <th scope="col">Standard</th>
+        <th scope="col">Premium</th>
+        <th scope="col">Premium 24x7</th>
+        <th scope="col">Mission Critical</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Plans</th>
+        <td>Developer, Business</td>
+        <td>Business (add-on), Plus, Enterprise</td>
+        <td>Plus, Enterprise</td>
+        <td>Plus, Enterprise</td>
+        <td>Plus, Enterprise</td>
+      </tr>
+      <tr>
+        <th scope="row">Hours</th>
+        <td>—</td>
+        <td>Business hours</td>
+        <td>Business hours</td>
+        <td>24x7 for S1 and S2</td>
+        <td>24x7 for S1 and S2</td>
+      </tr>
+      <tr>
+        <th scope="row">Channels</th>
+        <td>Discord, GitHub</td>
+        <td>Email, support portal</td>
+        <td>+ private Slack channel, video call</td>
+        <td>+ private Slack channel, video call</td>
+        <td>+ phone line for S1, named support engineer</td>
+      </tr>
+      <tr>
+        <th scope="row">Named contacts</th>
+        <td>—</td>
+        <td>2</td>
+        <td>4</td>
+        <td>6</td>
+        <td>10</td>
+      </tr>
+      <tr>
+        <th scope="row">S1 Critical</th>
+        <td>—</td>
+        <td>1 business day</td>
+        <td>4 business hours</td>
+        <td>4 hours</td>
+        <td>1 hour</td>
+      </tr>
+      <tr>
+        <th scope="row">S2 High</th>
+        <td>—</td>
+        <td>2 business days</td>
+        <td>1 business day</td>
+        <td>8 hours</td>
+        <td>4 hours</td>
+      </tr>
+      <tr>
+        <th scope="row">S3 Normal</th>
+        <td>—</td>
+        <td>3 business days</td>
+        <td>2 business days</td>
+        <td>2 business days</td>
+        <td>1 business day</td>
+      </tr>
+      <tr>
+        <th scope="row">S4 Low</th>
+        <td>Best effort</td>
+        <td>5 business days</td>
+        <td>3 business days</td>
+        <td>3 business days</td>
+        <td>2 business days</td>
+      </tr>
+      <tr>
+        <th scope="row">Also included</th>
+        <td></td>
+        <td></td>
+        <td>Upgrade plan review, yearly health check</td>
+        <td>Upgrade plan review, yearly health check</td>
+        <td>All of Premium, root-cause report after every S1, quarterly service review, 10 Expert Hours a year</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>Business hours are 9 hours a day, Monday to Friday, excluding public holidays, in the time zone and region stated in your order form. Response time is the time to the first reply from an Authgear engineer, not the time to a fix. We keep working on S1 issues until they are resolved or a workaround is in place.</p>
+
+  <h2>Severity levels</h2>
+  <p>You choose the severity when you open a case. We may change it if the impact turns out different, and we will tell you why.</p>
+  <ul>
+    <li><strong>S1 Critical.</strong> Authgear is unavailable or unusable in production. For example, users can't sign in or sign up, or there is a security incident. There's no workaround.</li>
+    <li><strong>S2 High.</strong> A major feature is degraded in production and the workaround is difficult. For example, one login method or MFA fails for a group of users.</li>
+    <li><strong>S3 Normal.</strong> A minor production issue that has a workaround, or any issue in a non-production environment.</li>
+    <li><strong>S4 Low.</strong> How-to questions, documentation questions and feature requests.</li>
+  </ul>
+  <p>S1 and S2 are for production only. Outside business hours, open S1 and S2 cases by phone (Mission Critical), by posting in your private Slack channel (Premium 24x7 and Mission Critical), or with a ticket in the support portal, so that the on-call engineer is paged.</p>
+
+  <h2>What Support covers</h2>
+  <ul>
+    <li>Authgear doesn't work as described in the documentation: errors, outages and bugs in Authgear.</li>
+    <li>Questions about how a documented feature works, or which setting to use. We answer at documentation level: we point you to the right feature, setting or guide.</li>
+    <li>The official Authgear SDKs and the documented APIs (Admin API, OIDC/OAuth endpoints, hooks interface), on supported versions.</li>
+    <li>Self-managed deployments installed with the official Helm chart or container images, on supported versions. See <a href="#self-managed-deployments">Self-managed deployments</a>.</li>
+    <li>Account, billing and configuration questions about the Authgear portal.</li>
+  </ul>
+
+  <h2>What Support doesn't cover, and what we do instead</h2>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Request</th>
+        <th scope="col">Why it's not Support</th>
+        <th scope="col">What we do instead</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>"Why doesn't login work in our app?" when Authgear is working as documented</td>
+        <td>The problem is in your application code</td>
+        <td>Expert Hours: we debug your integration with you</td>
+      </tr>
+      <tr>
+        <td>Reviewing your code, architecture or integration plan</td>
+        <td>Design work on your system</td>
+        <td>Expert Hours</td>
+      </tr>
+      <tr>
+        <td>Writing migration scripts, Admin API automation, hooks or custom UI code</td>
+        <td>Writing code that will run in your production system</td>
+        <td>Expert Hours, or Professional Services for larger work</td>
+      </tr>
+      <tr>
+        <td>Kubernetes, VMs, databases, networking, ingress, TLS certificates, cloud accounts</td>
+        <td>Your infrastructure</td>
+        <td>Expert Hours, or a Maintenance plan</td>
+      </tr>
+      <tr>
+        <td>Installing or upgrading a self-managed cluster</td>
+        <td>Operations work</td>
+        <td>Deployment and Maintenance plans; upgrade plan review on Premium and above</td>
+      </tr>
+      <tr>
+        <td>Unsupported versions, unofficial install methods, modified source code</td>
+        <td>We can't reproduce them reliably</td>
+        <td>Upgrade first; Expert Hours to help plan the upgrade</td>
+      </tr>
+      <tr>
+        <td>Training on OAuth, OIDC, SAML or Kubernetes in general</td>
+        <td>General education, not product support</td>
+        <td>Expert Hours (workshops)</td>
+      </tr>
+      <tr>
+        <td>Calls longer than 30 minutes that aren't about an Authgear fault</td>
+        <td>Consulting time</td>
+        <td>Expert Hours</td>
+      </tr>
+      <tr>
+        <td>New features or custom behaviour</td>
+        <td>Product work</td>
+        <td>Feature request (S4), or Professional Services</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>We ask before we bill</h3>
+  <p>The first 30 minutes of looking into any case are always free. If a case turns out to be outside Support, the engineer tells you, explains why, and asks before using any Expert Hours.</p>
+
+  <h2>Expert Hours</h2>
+  <p>Expert Hours are prepaid time with an Authgear engineer for work on your side of the integration: code and integration reviews, debugging your login flows, migration help, architecture and capacity planning, self-managed infrastructure troubleshooting and workshops.</p>
+  <ul>
+    <li>Sold in blocks of 10 hours. Used in 30-minute steps. Valid for 12 months from purchase.</li>
+    <li>Scheduled within 5 business days. Urgent work is scheduled on a best-effort basis.</li>
+    <li>Each session ends with a short written summary of the time used and what was done.</li>
+  </ul>
+
+  <h2>Professional Services</h2>
+  <p>Work with a defined deliverable is quoted separately in man-days with a written scope. Examples include custom features, integrations, migration tooling, load testing and custom deployments.</p>
+
+  <h2 id="self-managed-deployments">Self-managed deployments</h2>
+  <p>When you run Authgear on your own infrastructure, Support covers <strong>the Authgear software</strong>. We don't cover the environment it runs in.</p>
+  <table class="legal-table--wrap">
+    <thead>
+      <tr>
+        <th scope="col"><span class="sr-only">Area</span></th>
+        <th scope="col">Hosted by Authgear (SaaS, Managed Cloud)</th>
+        <th scope="col">Self-managed with a Maintenance plan</th>
+        <th scope="col">Self-managed without a Maintenance plan</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Authgear software bugs</th>
+        <td>Support</td>
+        <td>Support</td>
+        <td>Support</td>
+      </tr>
+      <tr>
+        <th scope="row">How-to questions about Authgear</th>
+        <td>Support</td>
+        <td>Support</td>
+        <td>Support</td>
+      </tr>
+      <tr>
+        <th scope="row">Infrastructure (cluster, database, network)</th>
+        <td>Included, we run it</td>
+        <td>Maintenance plan's included Expert Hours (10 a year), then Expert Hours</td>
+        <td>Expert Hours</td>
+      </tr>
+      <tr>
+        <th scope="row">Version upgrades</th>
+        <td>Included</td>
+        <td>Maintenance plan schedule</td>
+        <td>You run them (upgrade plan review on Premium and above), or Expert Hours</td>
+      </tr>
+      <tr>
+        <th scope="row">Monitoring and uptime</th>
+        <td>Included, <a href={slaHref}>SLA</a> applies</td>
+        <td>Maintenance plan</td>
+        <td>Your responsibility</td>
+      </tr>
+      <tr>
+        <th scope="row">Diagnosing an outage</th>
+        <td>Support</td>
+        <td>Support for Authgear, Maintenance plan for the cluster</td>
+        <td>Support once you send logs; Expert Hours for hands-on investigation</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>On a self-managed deployment, response times still apply. But resolving an issue depends on you giving us logs, configuration (with secrets removed) and, where agreed, access. In a disconnected environment we work through a screen share that you run.</p>
+
+  <h2>Supported versions</h2>
+  <ul>
+    <li><strong>SDKs:</strong> the latest major version of each official SDK. We may ask you to upgrade to the latest version before we investigate an SDK issue.</li>
+    <li><strong>Community and partner SDKs:</strong> not covered by Support. Questions go to the SDK's maintainer.</li>
+  </ul>
+
+  <h2>Your responsibilities</h2>
+  <ul>
+    <li>Open cases from a named contact, with steps to reproduce, the affected project or environment, timestamps, and logs or request IDs.</li>
+    <li>Be available to work with us on S1 and S2 cases.</li>
+    <li>For self-managed deployments: keep to supported versions and the official install method.</li>
+  </ul>
+
+  <h2>Changes to this page</h2>
+  <p>We will email customers 14 days before any change that reduces what Support covers.</p>
+</LegalPageLayout>

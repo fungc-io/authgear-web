@@ -171,6 +171,7 @@ export const footerStrings: Record<string, Record<string, string>> = {
   dataProcessingAddendum: { en: 'DPA', 'zh-Hant': '資料處理附錄', ja: 'DPA', es: 'DPA', de: 'DPA', fr: 'DPA' },
   subProcessors: { en: 'Sub-Processors', 'zh-Hant': '次處理者', ja: '副処理者', es: 'Subencargados', de: 'Unterauftragsverarbeiter', fr: 'Sous-traitants ultérieurs' },
   sla: { en: 'SLA', 'zh-Hant': 'SLA', ja: 'SLA', es: 'SLA', de: 'SLA', fr: 'SLA' },
+  supportPolicy: { en: 'Support policy', 'zh-Hant': '支援政策', ja: 'サポートポリシー', es: 'Política de soporte', de: 'Support-Richtlinie', fr: 'Politique de support' },
   freeToolsTitle: { en: 'Free Tools', 'zh-Hant': '免費工具', ja: '無料ツール', es: 'Herramientas gratuitas', de: 'Kostenlose Tools', fr: 'Outils gratuits' },
   oidcDiscovery: { en: 'OIDC Discovery Explorer', 'zh-Hant': 'OIDC Discovery 探索器', ja: 'OIDC Discovery エクスプローラー', es: 'Explorador de OIDC Discovery', de: 'OIDC-Discovery-Explorer', fr: 'Explorateur OIDC Discovery' },
   sslChecker: { en: 'SSL Checker', 'zh-Hant': 'SSL 檢查工具', ja: 'SSL チェッカー', es: 'Comprobador SSL', de: 'SSL-Checker', fr: 'Vérificateur SSL' },
