@@ -200,7 +200,6 @@ const slaHref = localizedPath(locale, '/sla');
         <th scope="col"><span class="sr-only">Area</span></th>
         <th scope="col">Hosted by Authgear (SaaS, Managed Cloud)</th>
         <th scope="col">Self-managed with a Maintenance plan</th>
-        <th scope="col">Self-managed without a Maintenance plan</th>
       </tr>
     </thead>
     <tbody>
@@ -208,11 +207,9 @@ const slaHref = localizedPath(locale, '/sla');
         <th scope="row">Authgear software bugs</th>
         <td>Support</td>
         <td>Support</td>
-        <td>Support</td>
       </tr>
       <tr>
         <th scope="row">How-to questions about Authgear</th>
-        <td>Support</td>
         <td>Support</td>
         <td>Support</td>
       </tr>
@@ -220,25 +217,21 @@ const slaHref = localizedPath(locale, '/sla');
         <th scope="row">Infrastructure (cluster, database, network)</th>
         <td>Included, we run it</td>
         <td>Maintenance plan's included Expert Hours (10 a year), then Expert Hours</td>
-        <td>Expert Hours</td>
       </tr>
       <tr>
         <th scope="row">Version upgrades</th>
         <td>Included</td>
         <td>Maintenance plan schedule</td>
-        <td>You run them (upgrade plan review on Premium and above), or Expert Hours</td>
       </tr>
       <tr>
         <th scope="row">Monitoring and uptime</th>
         <td>Included, <a href={slaHref}>SLA</a> applies</td>
         <td>Maintenance plan</td>
-        <td>Your responsibility</td>
       </tr>
       <tr>
         <th scope="row">Diagnosing an outage</th>
         <td>Support</td>
         <td>Support for Authgear, Maintenance plan for the cluster</td>
-        <td>Support once you send logs; Expert Hours for hands-on investigation</td>
       </tr>
     </tbody>
   </table>
