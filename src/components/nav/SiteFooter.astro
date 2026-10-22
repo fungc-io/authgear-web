@@ -347,7 +347,7 @@ const poweredSuffix = L('poweredBySuffix');
             </ul>
           </div>
 
-          {/* Company */}
+          {/* Company + Legal */}
           <div class="footer-menu-links-wrapper workshop">
             <ul role="list" class="footer-menu-list w-list-unstyled">
               <li class="footer-menu-list-item">
@@ -379,6 +379,56 @@ const poweredSuffix = L('poweredBySuffix');
                 </a>
               </li>
             </ul>
+            <ul role="list" class="footer-menu-list w-list-unstyled">
+              <li class="footer-menu-list-item">
+                <h3 class="footer-menu-title">{L('legalTitle')}</h3>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href={lp('/terms')} class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('termsOfService')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href={lp('/policy')} class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('acceptableUsePolicy')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href={lp('/data-privacy')} class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('privacyPolicy')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href="/dpa/" class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('dataProcessingAddendum')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href="/sub-processors/" class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('subProcessors')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href={lp('/security')} class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('security')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href={lp('/terms-of-enterprise-license')} class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('enterpriseLicenses')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href={lp('/sla')} class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('sla')}</div>
+                </a>
+              </li>
+              <li class="footer-menu-list-item">
+                <a href={lp('/support-policy')} class="footer-menu-link workshop-footer-link w-inline-block">
+                  <div>{L('supportPolicy')}</div>
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -394,42 +444,6 @@ const poweredSuffix = L('poweredBySuffix');
       </div>
       <div class="ds-footer-bottom-bar__end">
         <div class="ds-footer-bottom-bar__links">
-          <a href={lp('/terms')} class="ds-footer-bottom-bar__link">
-            {L('termsOfService')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href={lp('/policy')} class="ds-footer-bottom-bar__link">
-            {L('acceptableUsePolicy')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href={lp('/data-privacy')} class="ds-footer-bottom-bar__link">
-            {L('privacyPolicy')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href="/dpa/" class="ds-footer-bottom-bar__link">
-            {L('dataProcessingAddendum')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href="/sub-processors/" class="ds-footer-bottom-bar__link">
-            {L('subProcessors')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href={lp('/security')} class="ds-footer-bottom-bar__link">
-            {L('security')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href={lp('/terms-of-enterprise-license')} class="ds-footer-bottom-bar__link">
-            {L('enterpriseLicenses')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href={lp('/sla')} class="ds-footer-bottom-bar__link">
-            {L('sla')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
-          <a href={lp('/support-policy')} class="ds-footer-bottom-bar__link">
-            {L('supportPolicy')}
-          </a>
-          <span class="ds-footer-bottom-bar__sep" aria-hidden="true">·</span>
           <button
             type="button"
             class="ds-footer-bottom-bar__link"

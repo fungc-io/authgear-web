@@ -194,6 +194,7 @@ export const footerStrings: Record<string, Record<string, string>> = {
   passkeyDemo: { en: 'Passkey Demo & WebAuthn Tester', 'zh-Hant': '通行密鑰示範與 WebAuthn 測試工具', ja: 'パスキーデモ & WebAuthn テスター', es: 'Demo de passkeys y probador WebAuthn', de: 'Passkey-Demo & WebAuthn-Tester', fr: 'Démo passkeys et testeur WebAuthn' },
   smsCostCalculator: { en: 'SMS Cost Calculator', 'zh-Hant': '簡訊成本計算器', ja: 'SMS コスト計算ツール', es: 'Calculadora de costes de SMS', de: 'SMS-Kostenrechner', fr: 'Calculateur de coûts SMS' },
   companyTitle: { en: 'company', 'zh-Hant': '公司', ja: '会社情報', es: 'empresa', de: 'Unternehmen', fr: 'entreprise' },
+  legalTitle: { en: 'legal', 'zh-Hant': '法律條款', ja: '法的情報', es: 'legal', de: 'Rechtliches', fr: 'mentions légales' },
   aboutUs: { en: 'About Us', 'zh-Hant': '關於我們', ja: '会社概要', es: 'Sobre nosotros', de: 'Über uns', fr: 'À propos' },
   contactSales: { en: 'Contact Sales', 'zh-Hant': '聯絡業務', ja: '営業に問い合わせ', es: 'Contactar con ventas', de: 'Vertrieb kontaktieren', fr: 'Contact commercial' },
   ourPromises: { en: 'Our Promises', 'zh-Hant': '我們的承諾', ja: '私たちの約束', es: 'Nuestros compromisos', de: 'Unsere Versprechen', fr: 'Nos engagements' },
