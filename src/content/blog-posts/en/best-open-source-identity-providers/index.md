@@ -7,6 +7,7 @@ metaTitle: "Best Open Source Identity Providers for SSO & CIAM (2026)"
 metaDescription: "Compare 8 open source identity providers for SSO and CIAM: Keycloak, Authgear, Authentik, Zitadel, Ory and more. Licences, passkeys, SAML and self-hosting."
 category: industry
 readTime: 13
+draft: false
 faq:
   - q: "What is the best open source identity provider?"
     a: "There is no single best one. Keycloak is the most mature choice for workforce SSO and enterprise federation. Authentik is easier to start with for internal apps. For customer-facing login, Authgear, Zitadel, Logto, Ory and SuperTokens are stronger fits, depending on how much of the login UI you want to build yourself and which licence you can accept."
@@ -28,7 +29,7 @@ An open source identity provider handles sign-up, login, single sign-on (SSO) an
 
 This guide compares eight of them as they stand in October 2026. We build Authgear, one of the eight, so we have tried to be fair and to say where each one wins.
 
-## Pick X if…
+## Which open source identity provider should you pick?
 
 - **Keycloak** if you need workforce SSO with LDAP, Active Directory or Kerberos, and you have a team that is comfortable running a Java service.
 - **Authgear** if you're building customer-facing or frontline apps and want passkeys, magic links and SMS or WhatsApp OTP built in, with the option of having it run for you.
@@ -277,18 +278,18 @@ Many teams in the UK, Ireland, the Netherlands and the Nordics choose open sourc
 
 ### What it doesn't solve
 
-- **Your hosting provider's jurisdiction.** A UK or EU region run by a US-owned cloud keeps data local, but the provider remains under US law, including the CLOUD Act. Our [UK data sovereignty guide](/post/uk-data-sovereignty-login-identity) explains why residency and sovereignty differ.
+- **Your hosting provider's jurisdiction.** A UK or EU region run by a US-owned cloud keeps data local, but the provider remains under US law, including the CLOUD Act. Our guide to [sovereign cloud and the CLOUD Act](/post/sovereign-cloud-cloud-act-login-data) explains what that means for login data, and our [UK data sovereignty guide](/post/uk-data-sovereignty-login-identity) explains why residency and sovereignty differ.
 - **Compliance.** Self-hosting doesn't make you compliant on its own. You still need agreements, security controls and processes.
 - **Operations.** Patching, backups, high availability and incident response are yours.
 - **Licence terms.** AGPL-3.0, as Zitadel uses, has obligations that Apache-2.0 and MIT don't.
 
-If you want UK or EU hosting without running the system yourself, you can self-host Authgear on your own infrastructure or have us run a private cloud for you in a UK or EU region.
+If you want UK or EU hosting without running it yourself, we can run Authgear for you as a private cloud in a UK or EU region, or you can self-host it on your own infrastructure.
 
 ## How to choose
 
 Work through these questions in order.
 
-- **Workforce SSO or customer login?** Employees signing in to internal tools point to Keycloak, Authentik or Authelia. Customers signing up to your product point to Authgear, Zitadel, Logto, Ory or SuperTokens. See [what CIAM is](/post/what-is-customer-identity-and-access-management-ciam) if the difference is new to you.
+- **Workforce SSO or customer login?** Employees signing in to internal tools point to an open source SSO server such as Keycloak, Authentik or Authelia. Customers signing up to your product point to Authgear, Zitadel, Logto, Ory or SuperTokens. See [what CIAM is](/post/what-is-customer-identity-and-access-management-ciam) if the difference is new to you.
 - **Do you need SAML?** If enterprise customers will ask for it, rule out Authelia and check whether SAML sits in a paid edition (Ory, SuperTokens, Logto).
 - **What does your team know?** Pick a stack you can debug: Java (Keycloak), Python (Authentik), Go (Authgear, Zitadel, Ory, Authelia) or TypeScript (Logto).
 - **Who builds the login UI?** Ready-made pages save weeks. Headless tools (Ory, SuperTokens with a custom UI) give control at the cost of building it.
@@ -298,7 +299,7 @@ Work through these questions in order.
 
 ## Further reading
 
-- [Authentik vs Keycloak vs Authgear: self-hosted SSO compared](/post/best-self-hosted-sso-platforms-compared-authgear-vs-keycloak-vs-authentik)
+- [Authentik vs Keycloak: self-hosted SSO compared](/post/best-self-hosted-sso-platforms-compared-authgear-vs-keycloak-vs-authentik)
 - [Authgear as a Keycloak alternative](/compare/keycloak-alternative)
 - [Top open source Auth0 alternatives](/post/top-open-source-auth0-alternatives)
 

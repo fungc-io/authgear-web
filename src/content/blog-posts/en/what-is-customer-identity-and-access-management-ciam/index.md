@@ -16,7 +16,7 @@ faq:
   - q: "What is the difference between CIAM and IAM?"
     a: "Workforce IAM manages employees and contractors: a known, fairly small group whose accounts IT creates and controls. CIAM manages customers: a large, unpredictable group who create their own accounts, expect a fast branded login, and need to give and withdraw consent over their data."
   - q: "Is there an open-source CIAM?"
-    a: "Yes. Keycloak and Authgear are both open source under the Apache 2.0 licence and can be self-hosted. Keycloak began as a general identity and access management server; Authgear is built for customer-facing apps and can also be run for you as a private cloud."
+    a: "Yes. Keycloak and Authgear are both open source under the Apache-2.0 licence and can be self-hosted. Keycloak began as a general identity and access management server; Authgear is built for customer-facing apps and can also be run for you as a private cloud."
   - q: "Is Keycloak a CIAM?"
     a: "Keycloak describes itself as open-source identity and access management. It supports self-registration, social login and custom themes, so many teams use it for customer login. Getting a polished customer experience usually means building custom themes and extensions, and maintaining them through upgrades."
   - q: "Do I need CIAM for GDPR?"
@@ -58,7 +58,7 @@ The biggest shift is that every extra step in a customer login costs you sign-up
 
 ### Where Keycloak fits
 
-[Keycloak](https://www.keycloak.org/) is a good example of a tool that sits between the two worlds. Its own site calls it "Open Source Identity and Access Management". It is Apache 2.0 licensed, a Cloud Native Computing Foundation incubating project, and it is strong on workforce-style needs: LDAP and Active Directory federation, SAML and OpenID Connect identity brokering, and a central admin console.
+[Keycloak](https://www.keycloak.org/) is a good example of a tool that sits between the two worlds. Its own site calls it "Open Source Identity and Access Management". It is Apache-2.0 licensed, a Cloud Native Computing Foundation incubating project, and it is strong on workforce-style needs: LDAP and Active Directory federation, SAML and OpenID Connect identity brokering, and a central admin console.
 
 Many teams also use Keycloak for customer login, and it has the building blocks: self-registration, social login set up from the admin console, and an account console where users update their profile, set up two-factor authentication and manage sessions. To make it feel like a customer product, teams usually:
 
@@ -98,7 +98,7 @@ A CIAM system holds some of the most sensitive data you have: names, emails, pho
 | **Effort for your team** | Lowest | Highest: upgrades, scaling, backups, on-call | Low |
 | **Control** | Limited to the vendor's settings | Full | High, often with audit rights |
 
-For UK and EU buyers this choice is often about more than convenience. Data residency answers "which country are the servers in?" Data sovereignty also asks "who operates the system, and which country's law applies to them?" A US provider's European data centre gives you residency, but the provider still answers to US law. Our [UK data sovereignty guide](/post/uk-data-sovereignty-login-identity) covers UK GDPR, the US CLOUD Act and what to ask vendors.
+For UK and EU buyers this choice is often about more than convenience. Data residency answers "which country are the servers in?" Data sovereignty also asks "who operates the system, and which country's law applies to them?" A US provider's European data centre gives you residency, but the provider still answers to US law. Our [UK data sovereignty guide](/post/uk-data-sovereignty-login-identity) covers UK GDPR, the US CLOUD Act and what to ask vendors, and our guide to [sovereign cloud and the CLOUD Act](/post/sovereign-cloud-cloud-act-login-data) explains what "sovereign" should mean.
 
 If a regulator, a large customer or a public-sector tender asks where your user data lives, self-hosting or a private cloud in your region gives you a clear answer.
 
@@ -116,9 +116,9 @@ A short checklist for developers, CTOs and IT leads:
 
 ### Open-source CIAM options
 
-If open source matters to you, the main self-hostable choices are Keycloak, Authentik, Ory, ZITADEL and Authgear. They differ in language, licence, how much of the customer experience comes ready-made and whether a managed option exists.
+If open source matters to you, the main self-hostable choices are Keycloak, Authentik, Ory, Zitadel and Authgear. They differ in language, licence, how much of the customer experience comes ready-made and whether a managed option exists. Our comparison of [open source identity providers](/post/best-open-source-identity-providers) goes through each one.
 
-[Authgear](/solutions/data-sovereignty) is an open-source CIAM, Apache 2.0 licensed, built for customer-facing web and mobile apps. You can self-host it with every feature, or have us run a private cloud for you in the region you choose, including the UK and the EU. Login pages are fully customisable in HTML and CSS on every plan, including self-hosted, and you can import existing users with their bcrypt password hashes. If you are moving off Keycloak, see the [Keycloak alternative](/compare/keycloak-alternative) page.
+[Authgear](/solutions/data-sovereignty) is an open-source CIAM, Apache-2.0 licensed, built for customer-facing web and mobile apps. You can self-host it with every feature, or have us run a private cloud for you in the region you choose, including the UK and the EU. Login pages are fully customisable in HTML and CSS on every plan, including self-hosted, and you can import existing users with their bcrypt password hashes. If you are moving off Keycloak, see the [Keycloak alternative](/compare/keycloak-alternative) page.
 
 ## Frequently Asked Questions
 
@@ -132,7 +132,7 @@ Workforce IAM manages employees and contractors: a known, fairly small group who
 
 ### Is there an open-source CIAM?
 
-Yes. Keycloak and Authgear are both open source under the Apache 2.0 licence and can be self-hosted. Keycloak began as a general identity and access management server; Authgear is built for customer-facing apps and can also be run for you as a private cloud.
+Yes. Keycloak and Authgear are both open source under the Apache-2.0 licence and can be self-hosted. Keycloak began as a general identity and access management server; Authgear is built for customer-facing apps and can also be run for you as a private cloud.
 
 ### Is Keycloak a CIAM?
 

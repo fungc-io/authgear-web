@@ -21,7 +21,7 @@ faq:
     a: "Data residency is about location: which country the servers are in. Data sovereignty also asks who operates the system and whose law applies to that operator. Data can sit in the UK or EU and still be reachable under another country's law."
 ---
 
-> **tl;dr** — The US CLOUD Act lets US authorities require providers under US jurisdiction to hand over data they control, wherever it is stored. A "sovereign cloud" tries to keep the data, the people running it and the law that governs them in one place. For your login system, that means asking where user data sits, who operates it, and whose law applies to them.
+> **tl;dr** — The US CLOUD Act lets US authorities require providers under US jurisdiction to hand over data they control, wherever it is stored. A "sovereign cloud" tries to keep the data, the people running it and the law that governs them in one place. For your login system, that means asking where user data sits, who operates it, and whose law applies to whoever runs it.
 
 *This article explains the rules in plain English. It is not legal advice. Talk to your data protection officer or a lawyer about your own situation.*
 
@@ -37,7 +37,7 @@ Its core is one sentence in [18 U.S.C. § 2713](https://www.law.cornell.edu/usco
 
 In plain terms: the location of the server does not decide the question. Control does.
 
-Points often missed:
+Four points are often missed:
 
 - **It is a law-enforcement tool.** It works through warrants and court orders in criminal investigations. Intelligence surveillance runs under other US laws.
 - **It needs US jurisdiction over the provider.** The Department of Justice's [CLOUD Act white paper](https://www.justice.gov/criminal/media/999601/dl?inline) says the Act "does not give U.S. law enforcement any new legal authority to acquire data" and did not extend US jurisdiction to new companies. A US company is clearly covered. Whether a foreign company is covered is "a fact-specific inquiry" that depends on how much business it does in the US.
@@ -54,9 +54,9 @@ There is no single legal definition of a sovereign cloud. Providers use the phra
 - **Operational sovereignty.** The people who run, patch and support the system are in that region too, and staff elsewhere cannot reach the data.
 - **Legal sovereignty.** The company running the system, and its parent, are governed only by that region's law. No foreign law can compel them to hand over data.
 
-A sovereign cloud vs a public cloud region, then, is mostly about the second and third layers. A public cloud region from a US provider gives you residency. It does not change who owns the provider.
+That is the real difference in data residency vs data sovereignty: residency is the first layer, and sovereignty needs all three. So sovereign cloud vs public cloud comes down to the second and third layers. A public cloud region from a US provider gives you residency, but it doesn't change who owns the provider.
 
-Public bodies are starting to put numbers on this. The European Commission's Cloud Sovereignty Framework scores providers on eight objectives, from legal jurisdiction to supply chain, using levels from SEAL-0 (no sovereignty) to SEAL-4 (a full EU supply chain). In April 2026 the Commission used it to [award its own sovereign cloud contracts](https://commission.europa.eu/news-and-media/news/commission-advances-cloud-sovereignty-through-strategic-procurement-2026-04-17_en). France (SecNumCloud) and Germany (C5) have their own national schemes. In the UK, the National Cyber Security Centre's advice is simpler: "You should be confident that you know where your data is, and who can access your data" ([NCSC Cloud Security Principle 2](https://www.ncsc.gov.uk/collection/cloud/the-cloud-security-principles/principle-2-asset-protection-and-resilience)).
+Public bodies are starting to put numbers on this. The European Commission's Cloud Sovereignty Framework scores providers on eight objectives, from legal jurisdiction to supply chain, using levels from SEAL-0 (no sovereignty) to SEAL-4 (a full EU supply chain). In April 2026 the Commission used it to [award its own sovereign cloud contracts](https://commission.europa.eu/news-and-media/news/commission-advances-cloud-sovereignty-through-strategic-procurement-2026-04-17_en). France (SecNumCloud) and Germany (C5) have their own national schemes. In the UK, where there is no official UK sovereign cloud scheme, the National Cyber Security Centre's advice is simpler: "You should be confident that you know where your data is, and who can access your data" ([NCSC Cloud Security Principle 2](https://www.ncsc.gov.uk/collection/cloud/the-cloud-security-principles/principle-2-asset-protection-and-resilience)).
 
 When a provider says "sovereign", ask which of the three layers it means. The checklist below turns that into questions.
 
@@ -94,7 +94,7 @@ The easiest start, and many offer a UK or EU region for residency. But the vendo
 
 ### 2. Self-hosted open source
 
-You run the login system yourself, on your own hardware or with a UK or European hosting provider. No outside vendor holds your user data, and you pick the email and SMS providers. The trade-off is work: upgrades, security patches, backups and on-call are yours. Check the hosting company too. A European vendor running on a US cloud moves the question one layer down rather than answering it.
+You run the login system yourself, on your own hardware or with a UK or European hosting provider. No outside vendor holds your user data, and you pick the email and SMS providers. Our comparison of [open source identity providers](/post/best-open-source-identity-providers) covers the main options. The trade-off is work: upgrades, security patches, backups and on-call are yours. Check the hosting company too. A European vendor running on a US cloud moves the question one layer down rather than answering it.
 
 ### 3. A private cloud run for you
 
