@@ -72,7 +72,7 @@ Self-hosting any of these three puts user data wherever you run it. The differen
 
 - **Keycloak.** The open-source project doesn't offer a managed service. Supported builds come from Red Hat, a US company owned by IBM, as part of its subscriptions, and you still run them yourself. If you want Keycloak hosted, you use a third party, and several are based in Europe.
 - **Authentik.** Authentik Security Inc. is a US company. It doesn't currently offer a hosted version, so you always run Authentik yourself. The Enterprise licence adds features and support, not hosting.
-- **Authgear.** You can self-host it, use Authgear Cloud, or have us run a private cloud for you in any region you choose. Authgear is built by a company registered in the UK. Authgear Cloud runs in the US and Hong Kong today, and an EU region is coming soon.
+- **Authgear.** You can self-host it, use Authgear Cloud, or have us run a private cloud for you in any region you choose. Authgear is built by a UK company. Authgear Cloud runs in the US and Hong Kong today, and an EU region is coming soon.
 
 For a longer look at where identity data lives and whose law reaches it, see [data sovereignty for identity](/solutions/data-sovereignty).
 

@@ -150,7 +150,7 @@ Copy these into your vendor questionnaire:
 
 We'll be plain about what Authgear offers today.
 
-- **A UK company.** Authgear is built by a company registered in the UK.
+- **Built by a UK company.** The company behind Authgear is registered in the UK.
 - **Open source, Apache-2.0.** You can self-host Authgear on UK infrastructure with every feature of the cloud version. In a self-hosted setup your user data doesn't reach our servers, and you pick your own email and SMS providers.
 - **Private cloud.** We run a dedicated deployment for you in a UK or EU region.
 - **Audited.** Authgear holds [ISO 27001 and SOC 2 Type 2](/post/authgear-achieves-iso-27001-and-soc-2-type-2-compliance-enhanced-data-security).
