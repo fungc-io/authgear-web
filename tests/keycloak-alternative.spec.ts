@@ -7,7 +7,7 @@ test.describe('/compare/keycloak-alternative', () => {
     const resp = await page.goto(PATH);
     expect(resp?.status()).toBe(200);
     await expect(page.locator('html')).toHaveAttribute('lang', 'en');
-    await expect(page).toHaveTitle('Keycloak Alternatives: Open Source, Self-Hosted or Managed');
+    await expect(page).toHaveTitle('Keycloak Alternatives in 2026: Open Source and Managed');
     await expect(page.locator('main h1')).toHaveText('Authgear: the open-source Keycloak alternative');
     await expect(page.locator('.logo-section img')).toHaveCount(6);
     await expect(page.locator('footer').first()).toBeVisible();
