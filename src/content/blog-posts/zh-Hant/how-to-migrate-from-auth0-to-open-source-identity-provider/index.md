@@ -1,179 +1,240 @@
 ---
 title: "如何從 Auth0 遷移到開源身分提供者"
-h1: "如何從 Auth0 遷移到開源身分提供者：完整逐步指南"
-excerpt: "透過這份逐步指南，了解如何從 Auth0 遷移到開源身分提供者。內容涵蓋規劃、資料匯出、實作、SDK 更新、測試與上線最佳實務。"
+excerpt: "一份可以實際照做的 Auth0 遷移計畫：匯出 tenant 設定與使用者、透過 Auth0 客服取得密碼雜湊與 TOTP 密鑰、搬移應用程式與社群登入，並選擇一種讓使用者維持登入狀態的切換方式。"
 coverImage: ./cover.webp
 category: highlight
 featured: true
-metaTitle: "如何從 Auth0 遷移到開源身分提供者：完整逐步指南"
-metaDescription: "透過這份逐步指南，了解如何從 Auth0 遷移到開源身分提供者。內容涵蓋規劃、資料匯出、實作、SDK 更新、測試與上線最佳實務。"
+metaTitle: "從 Auth0 遷移到開源 IdP：實作指南"
+metaDescription: "從 Auth0 搬家：匯出 tenant 設定與使用者、向 Auth0 客服申請密碼雜湊與 MFA 密鑰、搬移應用程式與社群登入，並規劃切換與回退。"
 publishedAt: 2025-12-16T17:40:16.768Z
-updatedAt: 2026-02-12T02:35:14.212Z
+updatedAt: 2026-11-17
+readTime: 10
 draft: false
+faq:
+  - q: "可以從 Auth0 匯出密碼雜湊嗎？"
+    a: "後台和 Management API 都不行。你要開一個客服案件、提供 PGP 金鑰、由第二位 tenant 管理員確認申請，並取得 CISO 或副總裁以上層級主管在 Auth0 確認表單上的簽名。Auth0 會逐案審核，表明並非所有申請都符合資格，也不給處理時程。"
+  - q: "Auth0 用什麼演算法雜湊密碼？"
+    a: "bcrypt。Auth0 表示所有 database connection 的密碼都以 bcrypt 加鹽雜湊，所以能驗證 bcrypt 雜湊的目標系統可以直接接受它們。"
+  - q: "離開 Auth0 時，使用者一定要重設密碼嗎？"
+    a: "只有在 Auth0 拒絕匯出雜湊，或新系統無法驗證 bcrypt 時才需要。如果匯出被拒，你可以在每位回來的使用者第一次登入時把密碼拿去 Auth0 驗證並存下新的雜湊，再對從沒回來的使用者改用重設。"
+  - q: "MFA 設定可以跟著使用者一起搬嗎？"
+    a: "TOTP 密鑰可以，它和密碼雜湊在同一個客服匯出裡。透過 Guardian App 的推播通知、WebAuthn 憑證和簡訊註冊都搬不走，這些使用者要在新系統重新註冊。"
+  - q: "遷移出問題時要怎麼回退？"
+    a: "讓 Auth0 tenant 維持在目前的方案，直到新系統乾淨運作幾週；切換期間凍結個人資料與密碼修改；保留舊的 client ID 與 callback URL，這樣就能把 App 指回去。Auth0 沒有唯讀模式，所以凍結得由你自己執行。"
 ---
 
-隨著組織成長與身分管理需求演進，許多團隊會重新評估既有驗證供應商。Auth0 是常見且成熟的 IDaaS 平台，提供驗證、授權與 SSO 能力。
+> **tl;dr**：要離開 Auth0 又不想讓使用者重設密碼，先用 Deploy CLI 匯出 tenant 設定、用 Management API 匯出使用者，再向 Auth0 客服開案申請密碼雜湊與 TOTP 密鑰，這兩樣只有申請才拿得到。接著把 Actions 裡的邏輯在新系統重建、把應用程式和社群登入指向新系統，然後一次切換，或用 session 交換讓使用者保持登入。在確定沒問題之前，別關掉 Auth0 tenant。
 
-它具備便利性與擴展性，但有些團隊會逐漸遇到成本、供應商綁定，或希望在安全與客製化上取得更高控制力。對這些團隊來說，遷移到開源身分提供者（IdP）可帶來彈性、透明度與成本效益。
+大多數 Auth0 遷移出問題的地方只有兩個細節。第一，你自己能執行的匯出並不包含密碼雜湊。第二，Actions 裡的程式碼早已悄悄成為登入流程的一部分，卻沒有人把它做了什麼寫下來。兩者都能解決，但前提是你在訂下日期之前就先規劃好。
 
-本文提供一份完整的逐步遷移指南，從盤點現況、規劃架構，到測試、分批切換與避免常見錯誤，協助你更穩定完成從 Auth0 到開源 IdP 的轉換。
+這份指南是一套不管你要搬去哪裡都適用的計畫，依據的是 Auth0 在 2026 年 11 月的官方文件。如果你還在挑選目標系統，可以先看我們的[開源 Auth0 替代方案比較](/zh-hant/post/top-open-source-auth0-alternatives/)，裡面涵蓋 Authgear、Keycloak、Ory 等選項。
 
-## **為什麼團隊會考慮離開 Auth0**
+## 為什麼團隊現在想離開 Auth0
 
-Auth0 因為上手快、功能完整而廣受採用，但以下因素常讓組織開始評估替代方案：
+Auth0 很容易上手，大多數離開的團隊其實都用得很順好幾年。通常是這四件事讓情況改變：
 
-- **成本上升**：隨著使用者成長，訂閱費用可能快速擴大，尤其是企業等級功能。
-- **供應商綁定**：過度依賴專有平台會降低彈性，使客製整合或流程調整更困難。
-- **客製化受限**：多租戶架構、進階驗證邏輯或特殊登入流程，常超出託管服務可調整範圍。
-- **資料控制與合規**：處理敏感資料的團隊，通常偏好自託管以滿足法規與治理需求。
-- **開放標準與社群生態**：開源 IdP 通常支援 OIDC、OAuth2、SAML，可讓團隊更自由客製、稽核與擴展驗證流程。
+- **規模一大就很貴。** Auth0 按每月活躍使用者計費，而產品成長後需要的功能，往往落在更高的方案。超過自助方案之後，價格就是一場談判。
+- **Rules 與 Hooks 已於 2026 年 11 月 18 日終止服務。** [Auth0 文件](https://auth0.com/docs/customize/rules)載明了這個日期，2023 年 10 月之後建立的 tenant 從來沒有這些功能。還留在裡面的邏輯已經停止執行，正在把它改寫成 Actions 的團隊，會問自己是否還要在 Auth0 上重寫。
+- **資料在地化。** 登入系統保存著每一位客戶的 Email、電話號碼和登入紀錄。關於這些資料可以放在哪裡、誰有權要求交出，各地的規範都在收緊。把它交給一家美國的託管服務商，已經不像以前那麼容易說服人。
+- **主導權。** Universal Login、Actions 和 Management API 是 Auth0 的介面，不是你的。開源身分提供者讓你能讀原始碼、決定在哪裡執行、修改你需要的部分。
 
-遷移到開源 IdP 可幫助組織降低成本、提升彈性，並取得更完整的身分管理主導權。
+## 第一步：匯出 tenant 設定
 
-## **開源身分提供者崛起**
+在匯出任何一個使用者之前，先把其他東西全部抓下來。Auth0 的 [Deploy CLI](https://auth0.com/docs/deploy-monitor/deploy-cli-tool) 會把 tenant 的設定寫成 YAML。先建立一個對 Management API 有讀取權限的 machine-to-machine 應用程式，然後：
 
-隨著企業尋求更具成本效益、彈性與透明度的方案，開源 IdP 的採用持續增加。
+```bash
+npm install -g auth0-deploy-cli
 
-像 Authgear、Keycloak、Ory Kratos 與 FusionAuth 等方案，提供企業級驗證能力，同時允許自託管、客製化與深度整合。開源 IdP 常見優勢包括：
+export AUTH0_DOMAIN=your-tenant.eu.auth0.com
+export AUTH0_CLIENT_ID=...
+export AUTH0_CLIENT_SECRET=...
 
-- **可客製化**：可直接調整原始碼與流程策略
-- **安全透明**：可由內部或社群稽核資料處理方式
-- **社群支持**：可獲得外掛、生態與實作經驗
-- **成本效率**：自託管可減少長期訂閱依賴，成本更可預測
+a0deploy export --format=yaml --output_folder=./auth0-tenant
+```
 
-因此，越來越多新創與企業在重視敏感資料治理、多租戶架構與授權控制時，會選擇開源 IdP。
+輸出內容涵蓋應用程式（含 callback URL 與 grant type）、connections、Actions、角色與權限、品牌設定、Email 範本等。其中三個部分決定了這次遷移的工作量：
 
-## **遷移流程（端到端總覽）**
+- **應用程式。** 每一個都是你要在新系統重建的 OIDC client。記下類型（regular web、single-page、native 或 machine-to-machine）、callback 與 logout URL，以及它呼叫哪些 API。
+- **Connections。** Database connection 存放你的使用者。社群 connection（Google、Apple、GitHub）和企業 connection（SAML、OIDC、Entra ID、Google Workspace）指向別人的身分提供者，改個設定就能搬。
+- **Actions。** 這是在登入過程中執行的自訂程式碼：加入 claims、擋掉特定網域的註冊、呼叫你的 CRM、強制管理員使用 MFA。逐一讀過，用白話把它做的事寫下來。有些對應到新系統的一個設定，有些需要 webhook，有些你會發現已經不需要了。
 
-從 Auth0 遷移到開源 IdP 是多步驟工程，需要規劃、測試與執行紀律。以下是完整流程概覽：
+匯出內容也會列出你的 API（resource server）與其 scope，你的後端程式碼檢查的就是這些。把這份清單留到第五步。
 
-### **盤點你現有的 Auth0 設定**
+## 第二步：匯出使用者
 
-遷移前，先完整理解目前 Auth0 設定：驗證流程、使用者資料、角色權限、MFA、社群登入與 API 依賴。這能幫助你辨識客製邏輯、相依性與安全考量。
+使用者匯出是在 [Management API](https://auth0.com/docs/manage-users/user-migration/bulk-user-exports) 上執行的一個 job，也可以從後台的 User Management、Users、Import/Export Users 操作。免費方案沒有這個功能。請選 JSON 而不是 CSV：CSV 最多只能有 30 個欄位，而且無法把 `app_metadata` 或 `user_metadata` 當成完整物件匯出。
 
-盤點還應涵蓋所有 client application、connections 與 tenant 設定，確保不遺漏關鍵能力，並能映射到新 IdP。建議同時文件化現有流程與擴充邏輯，因為這些都需在新系統重建或調整。完整盤點可顯著降低停機與資料遺失風險。
+```bash
+curl -X POST "https://$AUTH0_DOMAIN/api/v2/jobs/users-exports" \
+  -H "Authorization: Bearer $MGMT_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "format": "json",
+    "fields": [
+      {"name": "user_id"}, {"name": "email"}, {"name": "email_verified"},
+      {"name": "username"}, {"name": "phone_number"}, {"name": "name"},
+      {"name": "given_name"}, {"name": "family_name"}, {"name": "picture"},
+      {"name": "identities"}, {"name": "app_metadata"}, {"name": "user_metadata"},
+      {"name": "blocked"}, {"name": "created_at"}, {"name": "last_login"}
+    ]
+  }'
+```
 
-### **選擇合適的開源身分提供者**
+不帶 `connection_id` 就會一次匯出所有 connection。輪詢 `GET /api/v2/jobs/{job_id}` 直到狀態變成 `completed`，再從 `location` URL 下載檔案。連結只有 60 秒有效，job 和檔案在 24 小時後就會刪除，所以請把下載寫成腳本。
 
-選型是關鍵決策。請依與 Auth0 的功能對等程度評估：OAuth/OIDC 支援、SAML 整合、MFA 能力、使用者管理與可擴充性。
+檔案是 gzip 壓縮的 newline-delimited JSON，一行一個使用者。在規劃任何事情之前，先算一下你有哪些類型的使用者：
 
-同時應考量安全能力、合規支援、社群成熟度與企業支持，並評估未來擴展性與版本升級便利性。
+```bash
+gunzip -c users.json.gz | jq -r '.identities[0].provider' | sort | uniq -c
+```
 
-常見選擇包括 <a href="https://github.com/authgear/authgear-server" target="_blank">Authgear</a>、<a href="https://github.com/keycloak/keycloak" target="_blank" rel="nofollow">Keycloak</a> 與 <a href="https://github.com/JanssenProject/jans" target="_blank" rel="nofollow">Janssen</a>。建議在沙盒環境先驗證候選方案是否涵蓋必要流程與整合能力。
+provider 是 `auth0` 的使用者，密碼存在 database connection 裡。其他的（`google-oauth2`、`apple`、`samlp`、`waad` 等）都是透過別的提供者登入，沒有密碼需要遷移。這個比例告訴你第三步的密碼問題會影響多少人。
 
-### **設計遷移架構**
+匯出檔裡沒有的兩樣東西：
 
-遷移架構決定轉換方式。你可採分階段遷移（雙系統並行、逐步導流）以降低風險；也可採一次切換，但需精準控時以避免停機。
+- **角色。** Auth0 的 RBAC 角色存在角色上，不在使用者上。先用 `GET /api/v2/roles` 列出角色，再對每個角色分頁呼叫 `GET /api/v2/roles/{id}/users`。
+- **密碼雜湊。** 這要靠第三步。
 
-架構設計需涵蓋 Token 驗證、工作階段管理、應用重配置、錯誤處理與回退機制。也要決定是否保留暫時雙登入系統、如何處理舊密碼格式，以及角色權限同步方式。完善架構可確保新系統能平穩接替 Auth0。
+把每個使用者的 `user_id` 留下來。你自己的資料庫幾乎一定存了它，格式像 `auth0|5f1e...` 或 `google-oauth2|1098...`，而新系統會發出不同的 `sub`。你要嘛把舊 ID 當成自訂屬性匯入、在登入時查對，要嘛在匯入後跑一次性腳本改寫你的外鍵。
 
-### **從 Auth0 匯出使用者**
+## 第三步：取得密碼雜湊，並為拿不到做準備
 
-安全匯出使用者資料是維持登入連續性的核心。需包含使用者紀錄、密碼雜湊、metadata、角色權限與自訂 claims。Auth0 提供 API 與批次匯出工具可協助完成。
+Auth0 用 [bcrypt](https://auth0.com/blog/hashing-in-action-understanding-bcrypt/) 雜湊 database connection 的密碼。bcrypt 雜湊可以被任何實作 bcrypt 的系統驗證，所以理論上你的使用者可以保留密碼。實務上，把雜湊拿出來是一套流程，不是一次 API 呼叫。
 
-請確認匯出資料完整且正確，避免遺漏帳號或權限。傳輸與儲存過程要加密保護。高品質匯出是後續匯入成功的基礎。
+Auth0 只透過[客服案件](https://auth0.com/docs/manage-users/user-migration/export-password-hashes-and-mfa-secrets)釋出雜湊。截至 2026 年 11 月，文件上的要求是：
 
-### **匯入到新的 IdP**
+- 申請時要寫明 tenant 名稱，並附上 PGP 公鑰。
+- 需要另一位 tenant 管理員確認申請，除非只有一位管理員。
+- 需要 CISO、CSO 或副總裁以上層級的主管簽署 Auth0 的 Hashed Password and MFA Secret Export Acknowledgment 表單。打字的姓名不算數。
+- Auth0 會先審核資格。文件寫著「並非所有申請都符合匯出資格」，也沒有給出處理時程。
+- 檔案以 PGP 加密交付，下載連結只有開案者能開啟，三天內有效。
 
-匯出完成後，需把資料正確映射到新 IdP 的 schema，確保使用者屬性、角色與權限結構不失真。若密碼雜湊不相容，需設計安全過渡（例如首次登入重設或漸進式重雜湊）。
+盡早開案，在你告訴使用者任何事情之前，因為答案會改變你的計畫。你有三個選項，依優先順序排列：
 
-建議先以小批次驗證登入與權限，再進行全量匯入，可更早發現格式或映射問題。
+| 選項 | 使用者保留密碼？ | 需要 | 代價 |
+|---|---|---|---|
+| **匯入雜湊** | 是 | Auth0 核准匯出；目標系統能驗證 bcrypt | 一個客服案件，加上一些耐心 |
+| **首次登入時驗證** | 是，限有回來的使用者 | Auth0 繼續運作；一個小服務，把密碼拿去 Auth0 驗證後存下新的雜湊 | 兩套系統並行數週；還要為從沒回來的使用者準備方案 |
+| **強制重設** | 否 | 寄一封密碼重設信給所有人 | 客服工單，而且有些使用者不會回來 |
 
-### **重建應用與 OAuth Clients**
+第二個選項可行，是因為 Auth0 的 Resource Owner Password grant 讓後端可以拿密碼到 database connection 驗證。它是權宜之計，不是終點。訂一個期限，到期後把剩下的人全部重設。
 
-在新 IdP 中重建 client 設定：client ID、secret、redirect URI、scope、consent 與 token 生命週期。並確保 Web、行動、API 與第三方整合都完成對應更新。
+## 第四步：決定 MFA 怎麼辦
 
-任何原先信任 Auth0 Token 的系統都必須改為信任新 IdP。完整測試每個 client 可避免切換後登入中斷或會話失效。
+同一個客服匯出可以包含 MFA 密鑰，實務上指的是用驗證器 App 註冊的使用者的 TOTP 種子。這些可以直接匯入任何接受 TOTP 密鑰的系統。
 
-### **重建登入與驗證流程**
+其他的都搬不走：
 
-登入、註冊、密碼重設、Email 驗證等流程都需在新平台重建，包含品牌樣式、錯誤回饋與安全機制。若原本使用社群登入或多步驟驗證，也需同步重建。
+- 透過 Auth0 Guardian App 的**推播通知**綁在 Auth0 上。
+- **WebAuthn 與 passkeys** 綁定在 Auth0 的網域，公鑰也留在 Auth0 的儲存裡。
+- **簡訊與 Email 驗證碼**沒有可以匯出的密鑰。重新註冊只是再確認一次電話號碼。
 
-建議用真實使用者場景驗證流程，以確保轉換後安全性與使用體驗都不受影響。
+所以 MFA 的計畫就是：一份誰註冊了什麼的清單、一則說明需要重新註冊一次的切換公告，以及在新系統重新強制 MFA 之前的寬限期。那份清單可以用 `GET /api/v2/users/{id}/authentication-methods` 逐一查到。如果有 Action 對某個群組強制 MFA，這條政策在第五步搬。
 
-### **更新後端 API Token 驗證**
+## 第五步：搬移應用程式與後端的 token 檢查
 
-所有原本驗證 Auth0 Token 的後端服務都需更新為新 IdP：包含 JWT 簽章、audience、issuer、到期驗證與授權規則（RBAC/ABAC）。必要時更新 SDK 或 middleware。
+每一個 Auth0 應用程式都會變成新系統裡的一個 client。grant type 直接對應：regular web app 用 authorization code flow，SPA 與原生 App 用 authorization code 加 PKCE，machine-to-machine 用 client credentials。從第一步的匯出檔複製 callback URL 與 logout URL。
 
-此步驟必須完整測試，否則可能造成未授權存取或服務中斷。
+Universal Login 是大多數團隊低估的部分。登入頁面是 Auth0 替你渲染的，你加上的品牌設定、自訂文字或頁面範本都在 Auth0 裡面。新系統會渲染自己的頁面，所以預期要把品牌設定重做一次。如果你是對著 Auth0 的 authentication API 自己做了登入 UI，那改寫的工程更大，也是改用託管頁面的好時機。
 
-### **重新配置 MFA**
+你的後端現在檢查的是 Auth0 的 access token。每一個都要改 issuer、金鑰和 audience：
 
-若原系統使用 MFA，請在新 IdP 重新設定因子（TOTP、SMS、Push）與政策，並確認註冊、驗證、復原流程可用。若無法直接遷移既有因子資料，需規劃使用者重新註冊流程並提前溝通。
+| 檢查項目 | Auth0 | 遷移後 |
+|---|---|---|
+| Issuer（`iss`） | `https://your-tenant.eu.auth0.com/` | 新系統的端點，從它的 OpenID discovery 文件讀取 |
+| 金鑰 | `https://your-tenant.eu.auth0.com/.well-known/jwks.json` | `/.well-known/openid-configuration` 裡的 `jwks_uri` |
+| Audience（`aud`） | 你註冊的 API identifier | 看新系統放什麼；查它的文件 |
+| Subject（`sub`） | `auth0\|...` 或 `google-oauth2\|...` | 每個使用者一個新 ID，見第二步 |
+| 權限 | `permissions` 陣列，或由 Action 加上的命名空間 claims | 新系統的角色 claim，或查你自己的資料庫 |
 
-### **遷移角色與權限**
+把後端的修改放在一個 feature flag 後面，在切換期間同時接受兩個 issuer。這樣你才能一次搬一個應用程式，不必一口氣部署所有服務。
 
-需把 Auth0 的 RBAC/ABAC 映射到新平台等價能力，並確認所有應用都正確讀取與套用。建議用小規模使用者先驗證，以找出漏配或錯配問題。
+最後，回到第一步盤點的 Actions，逐一決定歸宿：新系統的內建設定、新系統的 webhook、你自己 App 裡的修改，或直接刪掉。
 
-### **重建社群登入供應商**
+## 第六步：搬移社群與企業 connection
 
-重新整合 Google、Facebook、Apple 等社群登入。需在各供應商重新建立 app 憑證，配置 redirect URI 與 scopes，並測試登入授權、帳號連結與重複 Email 等邊界情境。
+只要你在每個提供者那邊沿用同一個 OAuth app，社群 connection 就是最簡單的部分。使用者是由提供者的穩定 subject 識別的，所以在 Auth0 用 Google 登入的那個人，到了新系統仍然是同一個 Google 使用者。不要新建 Google 或 Apple app。把新系統的 callback URL 加進現有的 app，切換完成後再移除 Auth0 的 URL。
 
-### **端到端測試**
+兩件事要確認：
 
-完整測試可驗證所有遷移元件協同運作：登入、註冊、MFA、社群登入、API 與權限控管。建議覆蓋正常流程與錯誤流程，並納入 QA 或試點使用者回饋。
+- **帳號連結。** 匯入的使用者有 Email。當他第一次在新系統用 Google 登入時，系統必須把這個 Google 身分接到既有帳號上，而不是建立一個重複帳號。確認你的目標系統支援用已驗證的 Email 連結，並決定是否要使用者用密碼確認一次。這個確認步驟就是用來阻止攻擊者拿著某個提供者上未驗證的 Email 來接管帳號。
+- **Sign in with Apple。** Apple 的私人轉寄 Email 只會投遞到你在該開發者團隊底下向 Apple 註冊過的網域。沿用同一個 Apple 開發者團隊與 Services ID，並把新系統的寄件網域註冊進去，否則用轉寄信箱的使用者會收不到你寄的每一封信。
 
-### **規劃上線策略**
+企業 connection 在客戶那邊都有一位對口，要由他新增一個 service provider 或 client。這是整個計畫裡前置時間最長的部分。一拿到新系統的 metadata URL 就開始談，而且在每個客戶確認之前，都要讓 Auth0 的 connection 保持運作。
 
-建立清楚的上線與溝通計畫，涵蓋內部利害關係人與終端使用者。預先定義回退策略，安排切換時機，並準備監控與支援通路處理上線後問題。
+## 第七步：選擇切換方式，並保留回退路線
 
-### **逐步切換流量**
+切換有三種方式，哪一種適合你，取決於強制登出的代價有多大。
 
-若採分階段遷移，請逐步把使用者流量導向新 IdP，持續監控日誌、錯誤率與使用者回饋，必要時即時調整。確認穩定後再完成全量切換並下線舊系統。
+1. **一次切換。** 凍結 Auth0 上的密碼與個人資料修改，執行最後一次匯出與匯入，把應用程式部署成指向新系統，然後所有人重新登入。最簡單，適合內部工具或可以安排維護時段的單一 App。
+2. **讓使用者保持登入。** 照上面的方式匯入使用者，然後讓你的 App 暫時同時接受 Auth0 session 與新系統的 session。當一個帶著有效 Auth0 token 的請求進來時，一個小端點驗證它，並為同一位使用者在新系統建立 session。使用者完全無感。消費者 App 一旦登出就等於流失，就該走這條路。
+3. **按應用程式分階段。** 一次搬一個應用程式，後端同時接受兩個 issuer（第五步）。整段期間兩套系統都在運作，所以其中一邊的個人資料修改不會同步到另一邊。適合應用程式多、使用者少的情況，或搭配修改凍結一起用。
 
-## **常見錯誤與避免方式**
+不管選哪一種，都要留一條退路：
 
-即使規劃完善，遷移仍可能因小錯誤放大成大問題，影響使用體驗與安全。以下是最常見坑位與對應做法。
+- **讓 Auth0 tenant 維持在目前的方案**，直到新系統乾淨運作幾週，而且在雜湊匯出到手之前絕對不要取消。
+- **在最後一次匯出前凍結個人資料與密碼修改。** Auth0 沒有唯讀開關，所以要在 database connection 關閉註冊、在你的 App 停用密碼修改流程，並暫停會寫入使用者 metadata 的 Actions。
+- **保留舊的 client ID 與 callback URL**，這樣把 App 指回去只是改設定。
+- **第一週盯著四個數字：** 登入成功率、密碼重設量、寫著「無法登入」的客服工單，以及 MFA 註冊數。這四個數字會告訴你匯入與雜湊驗證有沒有成功。
 
-### **密碼雜湊不相容**
+## 遷移到 Authgear
 
-不同平台使用不同雜湊演算法與格式，若未提前處理，使用者可能無法用舊密碼登入。請先確認現行雜湊方式。
+如果你要搬到 [Authgear](/zh-hant/compare/auth0-alternative/)，上面的步驟會對應到幾個具體的做法。
 
-由於雜湊無法直接「轉換」為另一演算法，新平台要嘛支援舊雜湊，要嘛要求使用者重設密碼。部分情境可在使用者成功登入後再安全重雜湊。
+**使用者連同 bcrypt 雜湊一起匯入。** [User Import API](https://docs.authgear.com/reference/apis/user-import-api) 可以在一筆紀錄裡接受每個使用者的 bcrypt 雜湊、TOTP 密鑰、角色、群組、自訂屬性與停用旗標。把 Auth0 的匯出檔轉成它的 schema，分批送出：
 
-### **忽略 MFA 遷移**
+```json
+{
+  "identifier": "email",
+  "records": [
+    {
+      "email": "alice@example.com",
+      "email_verified": true,
+      "name": "Alice Lee",
+      "password": { "type": "bcrypt", "password_hash": "$2b$10$..." },
+      "mfa": { "totp": { "secret": "JBSWY3DPEHPK3PXP" } },
+      "roles": ["admin"],
+      "custom_attributes": { "auth0_user_id": "auth0|5f1e4c2a9b..." },
+      "disabled": false
+    }
+  ]
+}
+```
 
-MFA 是關鍵安全層。若未遷移 MFA 設定或未規劃重新註冊流程，帳號保護會出現空窗。請確認新平台完整支援並提前向使用者說明必要操作。
+先在 Portal 宣告 `auth0_user_id` 這個自訂屬性，過渡期間你的後端就能用舊 ID 查到使用者。匯入是以 job 執行，每一筆紀錄都有自己的結果，所以一筆壞資料不會讓整批失敗。第二次執行時帶上 `upsert: true`，可以套用第一次匯出到凍結之間發生的個人資料變更。
 
-### **忽略 API 整合更新**
+**Session 可以延續。** Authgear 的[零停機遷移](https://docs.authgear.com/migration/zero-downtime-migration)就是第七步「讓使用者保持登入」的文件化版本：你的 App 驗證 Auth0 token，為對應的 Authgear 使用者呼叫 Admin API 的 `createSession`，再把 Authgear session 交回去。如果可以接受登出，[批次遷移](https://docs.authgear.com/admin-and-operations/migration/bulk-migration)的指南更短。
 
-許多系統依賴 IdP API 做驗證與使用者管理。若未更新這些整合，功能可能中斷。上線前必須完成 API 映射與完整測試。
+**社群登入會接到匯入的使用者上。** 把 `https://<your-authgear-endpoint>/sso/oauth2/callback/google` 加進 Auth0 正在用的同一個 Google OAuth client，然後把[帳號連結](https://docs.authgear.com/authentication-and-access/social-enterprise-login-providers/account-linking)設成 `action: login_and_link`，Email 符合某個匯入使用者的 Google 登入，就會在一次性確認後併入該帳號。
 
-### **跳過分階段測試**
+**後端改設定就能切換。** 為每個應用程式開啟「Issue JWT as access token」，把 middleware 指向 Authgear discovery 文件裡的 `jwks_uri`，並改從 `https://authgear.com/claims/user/roles` claim 讀取角色，取代 Auth0 的 `permissions`。參考[在後端驗證 JWT](https://docs.authgear.com/get-started/backend-api/jwt)。
 
-直接一次切換容易導致停機與大量錯誤。建議先小範圍試點，再逐步擴大，才能在低風險下修正問題。
+機制以外的部分：
 
-### **規劃的重要性**
+- Authgear 是 OIDC 提供者，也能作為 SAML 身分提供者，所以企業 connection 和你自己的 App 都是改設定就能搬。
+- 登入頁面用你自己的 CSS 與 HTML 客製，Universal Login 的品牌設定就放這裡。
+- 採 Apache-2.0 授權開源。你可以自行部署完整功能，也可以交給我們在你選擇的地區代管專屬私有雲，包括台灣。看[資料在地化](/zh-hant/solutions/data-sovereignty/)了解怎麼運作。
 
-要避免上述問題，關鍵是完整規劃、嚴謹測試與清楚溝通。把密碼相容、MFA、API 整合與分階段切換納入計畫，可大幅提高遷移成功率並維持使用者信任。
+想在規劃之前先試試看，可以用 Docker Compose [在 10 分鐘內於本機跑起 Authgear](/zh-hant/post/self-hosted-authentication-docker-kubernetes/)。我們的團隊會協助處理 Auth0 客服案件、匯入與切換。[預約示範](/zh-hant/schedule-demo)，帶著你的 tenant 匯出檔來，我們一起走一遍計畫。
 
-## **總結**
+## 常見問題
 
-從 Auth0 遷移到開源 IdP 需要周密規劃、完整測試與有節奏的執行。做對了，團隊可獲得更高彈性、更低長期成本，以及更完整的身分管理控制權。
+### 可以從 Auth0 匯出密碼雜湊嗎？
 
-像 Authgear 這類現代、開發者友善的開源方案，提供 OAuth2、OIDC、無密碼驗證與高擴充性。依照本文步驟推進，可在兼顧安全、合規與體驗下平穩完成遷移。
+後台和 Management API 都不行。你要開一個客服案件、提供 PGP 金鑰、由第二位 tenant 管理員確認申請，並取得 CISO 或副總裁以上層級主管在 Auth0 確認表單上的簽名。Auth0 會逐案審核，表明並非所有申請都符合資格，也不給處理時程。
 
-歡迎前往 <a href="https://github.com/authgear/authgear-server" target="_blank">Authgear GitHub 開源專案</a>，了解它如何支援安全且彈性的驗證架構。
+### Auth0 用什麼演算法雜湊密碼？
 
-正在規劃從 Auth0 遷移？
+bcrypt。Auth0 表示所有 database connection 的密碼都以 bcrypt 加鹽雜湊，所以能驗證 bcrypt 雜湊的目標系統可以直接接受它們。
 
-<a href="/zh-hant/schedule-demo" target="_blank">預約免費諮詢</a>，與我們的驗證專家一起設計低風險遷移方案。
+### 離開 Auth0 時，使用者一定要重設密碼嗎？
 
-## **FAQs**
+只有在 Auth0 拒絕匯出雜湊，或新系統無法驗證 bcrypt 時才需要。如果匯出被拒，你可以在每位回來的使用者第一次登入時把密碼拿去 Auth0 驗證並存下新的雜湊，再對從沒回來的使用者改用重設。
 
-### **遷移後使用者一定要重設密碼嗎？**
+### MFA 設定可以跟著使用者一起搬嗎？
 
-不一定。若密碼雜湊相容，使用者可沿用原密碼；若不相容，建議採分階段重設流程。
+TOTP 密鑰可以，它和密碼雜湊在同一個客服匯出裡。透過 Guardian App 的推播通知、WebAuthn 憑證和簡訊註冊都搬不走，這些使用者要在新系統重新註冊。
 
-### **MFA 設定可以從 Auth0 直接搬過來嗎？**
+### 遷移出問題時要怎麼回退？
 
-多數情況需在新平台重新配置 MFA。請提前通知使用者可能需要重新綁定。
-
-### **遷移一定會停機嗎？**
-
-不一定。透過分階段遷移與雙系統並行，通常可把停機降到最低，甚至避免停機。
-
-### **如果遷移失敗，可以回退嗎？**
-
-可以。過渡期間保留 Auth0（例如唯讀或備援模式）可提供快速回退能力。
-
+讓 Auth0 tenant 維持在目前的方案，直到新系統乾淨運作幾週；切換期間凍結個人資料與密碼修改；保留舊的 client ID 與 callback URL，這樣就能把 App 指回去。Auth0 沒有唯讀模式，所以凍結得由你自己執行。
