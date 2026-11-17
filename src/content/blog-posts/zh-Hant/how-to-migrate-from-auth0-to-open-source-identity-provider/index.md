@@ -7,7 +7,7 @@ featured: true
 metaTitle: "從 Auth0 遷移到開源 IdP：實作指南"
 metaDescription: "從 Auth0 搬家：匯出 tenant 設定與使用者、向 Auth0 客服申請密碼雜湊與 MFA 密鑰、搬移應用程式與社群登入，並規劃切換與回退。"
 publishedAt: 2025-12-16T17:40:16.768Z
-updatedAt: 2026-11-16
+updatedAt: 2026-11-17
 readTime: 10
 draft: false
 faq:
@@ -103,7 +103,7 @@ Auth0 用 [bcrypt](https://auth0.com/blog/hashing-in-action-understanding-bcrypt
 
 Auth0 只透過[客服案件](https://auth0.com/docs/manage-users/user-migration/export-password-hashes-and-mfa-secrets)釋出雜湊。截至 2026 年 11 月，文件上的要求是：
 
-- 申請時要寫明 tenant 名稱，並附上 PGP 公鑰：RSA，含 4096 位元的加密子金鑰，有效期至少七天。
+- 申請時要寫明 tenant 名稱，並附上 PGP 公鑰。
 - 需要另一位 tenant 管理員確認申請，除非只有一位管理員。
 - 需要 CISO、CSO 或副總裁以上層級的主管簽署 Auth0 的 Hashed Password and MFA Secret Export Acknowledgment 表單。打字的姓名不算數。
 - Auth0 會先審核資格。文件寫著「並非所有申請都符合匯出資格」，也沒有給出處理時程。
@@ -129,7 +129,7 @@ Auth0 只透過[客服案件](https://auth0.com/docs/manage-users/user-migration
 - **WebAuthn 與 passkeys** 綁定在 Auth0 的網域，公鑰也留在 Auth0 的儲存裡。
 - **簡訊與 Email 驗證碼**沒有可以匯出的密鑰。重新註冊只是再確認一次電話號碼。
 
-所以 MFA 的計畫就是：一份誰註冊了什麼的清單（`GET /api/v2/users/{id}/authentication-methods` 可以逐一查到）、一則說明需要重新註冊一次的切換公告，以及在新系統重新強制 MFA 之前的寬限期。如果有 Action 對某個群組（例如管理員）強制 MFA，這條政策在第五步搬。
+所以 MFA 的計畫就是：一份誰註冊了什麼的清單、一則說明需要重新註冊一次的切換公告，以及在新系統重新強制 MFA 之前的寬限期。那份清單可以用 `GET /api/v2/users/{id}/authentication-methods` 逐一查到。如果有 Action 對某個群組強制 MFA，這條政策在第五步搬。
 
 ## 第五步：搬移應用程式與後端的 token 檢查
 
@@ -141,7 +141,7 @@ Universal Login 是大多數團隊低估的部分。登入頁面是 Auth0 替你
 
 | 檢查項目 | Auth0 | 遷移後 |
 |---|---|---|
-| Issuer（`iss`） | `https://your-tenant.eu.auth0.com/`（結尾有斜線） | 新系統的端點，從它的 OpenID discovery 文件讀取 |
+| Issuer（`iss`） | `https://your-tenant.eu.auth0.com/` | 新系統的端點，從它的 OpenID discovery 文件讀取 |
 | 金鑰 | `https://your-tenant.eu.auth0.com/.well-known/jwks.json` | `/.well-known/openid-configuration` 裡的 `jwks_uri` |
 | Audience（`aud`） | 你註冊的 API identifier | 看新系統放什麼；查它的文件 |
 | Subject（`sub`） | `auth0\|...` 或 `google-oauth2\|...` | 每個使用者一個新 ID，見第二步 |
@@ -160,7 +160,7 @@ Universal Login 是大多數團隊低估的部分。登入頁面是 Auth0 替你
 - **帳號連結。** 匯入的使用者有 Email。當他第一次在新系統用 Google 登入時，系統必須把這個 Google 身分接到既有帳號上，而不是建立一個重複帳號。確認你的目標系統支援用已驗證的 Email 連結，並決定是否要使用者用密碼確認一次。這個確認步驟就是用來阻止攻擊者拿著某個提供者上未驗證的 Email 來接管帳號。
 - **Sign in with Apple。** Apple 的私人轉寄 Email 只會投遞到你在該開發者團隊底下向 Apple 註冊過的網域。沿用同一個 Apple 開發者團隊與 Services ID，並把新系統的寄件網域註冊進去，否則用轉寄信箱的使用者會收不到你寄的每一封信。
 
-企業 connection（連到客戶的 Entra ID、Okta 或 Google Workspace 的 SAML 與 OIDC）在客戶那邊都有一位對口，要由他新增一個 service provider 或 client。這是整個計畫裡前置時間最長的部分。一拿到新系統的 metadata URL 就開始談，而且在每個客戶確認之前，都要讓 Auth0 的 connection 保持運作。
+企業 connection 在客戶那邊都有一位對口，要由他新增一個 service provider 或 client。這是整個計畫裡前置時間最長的部分。一拿到新系統的 metadata URL 就開始談，而且在每個客戶確認之前，都要讓 Auth0 的 connection 保持運作。
 
 ## 第七步：選擇切換方式，並保留回退路線
 

@@ -7,7 +7,7 @@ featured: true
 metaTitle: "Migrate From Auth0 to an Open-Source IdP: A Practical Guide"
 metaDescription: "Migrate off Auth0: export tenant config and users, get password hashes and MFA secrets from Auth0 support, move apps and social logins, plan the cut-over."
 publishedAt: 2025-12-16T17:40:16.768Z
-updatedAt: 2026-11-16
+updatedAt: 2026-11-17
 readTime: 10
 draft: false
 faq:
@@ -103,7 +103,7 @@ Auth0 hashes database-connection passwords with [bcrypt](https://auth0.com/blog/
 
 Auth0 only releases hashes through a [support case](https://auth0.com/docs/manage-users/user-migration/export-password-hashes-and-mfa-secrets). The documented requirements, as of November 2026:
 
-- The request names the tenant and includes a PGP public key: RSA, with a 4096-bit encryption subkey, valid for at least seven days.
+- The request names the tenant and includes a PGP public key.
 - A second tenant administrator confirms the request, unless there is only one.
 - A CISO, CSO or VP-level executive signs Auth0's Hashed Password and MFA Secret Export Acknowledgment form. Typed names are not accepted.
 - Auth0 reviews eligibility first. The docs say "not all requests qualify for an export", and give no turnaround time.
@@ -129,7 +129,7 @@ Nothing else moves:
 - **WebAuthn and passkeys** are bound to Auth0's domain, and the public keys stay in Auth0's store.
 - **SMS and email codes** have no secret to export. Re-enrolment is just confirming the phone number again.
 
-So the plan for MFA is a list of who enrolled what (`GET /api/v2/users/{id}/authentication-methods` tells you per user), a cut-over message that explains the one-time re-enrolment, and a grace period before you enforce MFA again on the new system. If an Action enforces MFA for a group, such as admins, that policy moves in Step 5.
+So the plan for MFA is a list of who enrolled what, a cut-over message that explains the one-time re-enrolment, and a grace period before you enforce MFA again on the new system. The list comes from `GET /api/v2/users/{id}/authentication-methods`, one user at a time. If an Action enforces MFA for a group, that policy moves in Step 5.
 
 ## Step 5: Move applications and backend token checks
 
@@ -141,7 +141,7 @@ Your backends check Auth0's access tokens today. Each one needs its issuer, keys
 
 | Check | Auth0 | After migration |
 |---|---|---|
-| Issuer (`iss`) | `https://your-tenant.eu.auth0.com/` (trailing slash) | The new provider's endpoint, read from its OpenID discovery document |
+| Issuer (`iss`) | `https://your-tenant.eu.auth0.com/` | The new provider's endpoint, read from its OpenID discovery document |
 | Keys | `https://your-tenant.eu.auth0.com/.well-known/jwks.json` | The `jwks_uri` in `/.well-known/openid-configuration` |
 | Audience (`aud`) | The API identifier you registered | Whatever the new provider puts there; check its docs |
 | Subject (`sub`) | `auth0\|...` or `google-oauth2\|...` | A new ID per user, see Step 2 |
@@ -160,7 +160,7 @@ Two things to check:
 - **Account linking.** The imported user has an email address. The first time they sign in with Google on the new system, the provider has to attach that Google identity to the existing account rather than create a duplicate. Make sure your target supports linking by verified email, and decide whether to ask the user to confirm with their password once. That confirmation is what stops an attacker who controls an unverified email on some provider from taking over an account.
 - **Sign in with Apple.** Apple's private relay emails only deliver to domains you have registered with Apple for that team. Keep the same Apple developer team and Services ID, and register the new provider's sending domain, or relay users will miss every email you send.
 
-Enterprise connections (SAML and OIDC to a customer's Entra ID, Okta or Google Workspace) each have a counterpart on the customer's side who has to add a new service provider or client. That is the part of the plan with the longest lead time. Start those conversations as soon as you have the new provider's metadata URL, and keep the Auth0 connection live until each customer confirms.
+Enterprise connections each have a counterpart on the customer's side who has to add a new service provider or client. That is the part of the plan with the longest lead time. Start those conversations as soon as you have the new provider's metadata URL, and keep the Auth0 connection live until each customer confirms.
 
 ## Step 7: Choose a cut-over and keep a rollback
 
