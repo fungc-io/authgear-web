@@ -131,4 +131,49 @@ test.describe('help desk page', () => {
     expect(body.get('target-users')).toBe('Hong Kong, Taiwan');
     expect(body.get('source')).toBe('help-desk');
   });
+
+  test('requires details once Other is the selected purpose', async ({ page }) => {
+    const submissions: string[] = [];
+    await page.route('**/', async (route, req) => {
+      if (req.method() === 'POST') {
+        submissions.push(req.postData() ?? '');
+        await route.fulfill({ status: 200, body: 'ok' });
+        return;
+      }
+      await route.fallback();
+    });
+
+    await page.goto('/help-desk/');
+    await page.locator('astro-island:not([ssr]):has(form[name="help-desk"])').waitFor();
+    const form = page.locator('form[name="help-desk"]');
+
+    await form.locator('#hd-purpose-other').check();
+    await form.locator('[name="project-name"]').fill('acme-prod');
+    await form.locator('[name="company"]').fill('Acme');
+    await form.locator('[name="company-website"]').fill('https://acme.com');
+    await form.locator('[name="project-description"]').fill('A mobile banking app.');
+    await form.locator('[name="name"]').fill('Alex');
+    await form.locator('[name="email"]').fill('dev@acme.com');
+    // Whitespace alone does not count as details.
+    await form.locator('[name="notes"]').fill('   ');
+
+    await form.getByRole('button', { name: 'Submit' }).click();
+    await expect(page.getByText('Tell us what your enquiry is about so we can help.')).toBeVisible();
+    expect(submissions).toHaveLength(0);
+
+    // Under 10 characters, once trimmed, is too short to act on.
+    await form.locator('[name="notes"]').fill('  help me  ');
+    await form.getByRole('button', { name: 'Submit' }).click();
+    await expect(page.getByText('Please add a bit more detail (at least 10 characters)')).toBeVisible();
+    expect(submissions).toHaveLength(0);
+
+    await form.locator('[name="notes"]').fill('We need help setting up SAML.');
+    await form.getByRole('button', { name: 'Submit' }).click();
+
+    await expect(page.getByText('Thanks — we got your request.')).toBeVisible();
+    expect(submissions).toHaveLength(1);
+    const body = new URLSearchParams(submissions[0]);
+    expect(body.get('purpose')).toBe('Other');
+    expect(body.get('notes')).toBe('We need help setting up SAML.');
+  });
 });
