@@ -30,6 +30,10 @@ type Purpose = (typeof PURPOSES)[number]['value'];
 /** Target countries are only needed when OTP delivery is in scope. */
 const SMS_OTP = 'sms-otp';
 
+/** "Other" says nothing on its own, so the notes must explain it. */
+const OTHER = 'other';
+const MIN_OTHER_NOTES = 10;
+
 function encodeFormData(data: Record<string, string>): string {
   const params = new URLSearchParams();
   for (const [k, v] of Object.entries(data)) {
@@ -74,6 +78,7 @@ export default function HelpDeskForm() {
   const [status, setStatus] = useState<Status>('idle');
   const [honeypot, setHoneypot] = useState('');
   const [targetUsersError, setTargetUsersError] = useState(false);
+  const [notesError, setNotesError] = useState<'' | 'missing' | 'short'>('');
   const itiRef = useRef<IntlTelInputRef | null>(null);
 
   // The portal deep-links into this page with what it already knows.
@@ -86,20 +91,33 @@ export default function HelpDeskForm() {
   }, []);
 
   const needsTargetUsers = purpose === SMS_OTP;
+  const needsNotes = purpose === OTHER;
 
-  // Moving off the OTP option retires its conditional requirement.
+  // Moving off an option retires its conditional requirement.
   useEffect(() => {
     if (purpose !== SMS_OTP) setTargetUsersError(false);
+    if (purpose !== OTHER) setNotesError('');
   }, [purpose]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    // Target countries are only mandatory once OTP delivery is in scope, which
-    // no native `required` attribute can express. Everything else is native.
+    // Target countries are only mandatory once OTP delivery is in scope, and
+    // the notes once "Other" is chosen. A native `required` or `minLength`
+    // would count whitespace, so the component checks these two itself.
     const missingTargetUsers = purpose === SMS_OTP && targetUsers.trim() === '';
+    const notesLength = notes.trim().length;
+    const notesProblem =
+      purpose !== OTHER
+        ? ''
+        : notesLength === 0
+          ? 'missing'
+          : notesLength < MIN_OTHER_NOTES
+            ? 'short'
+            : '';
     setTargetUsersError(missingTargetUsers);
-    if (missingTargetUsers) return;
+    setNotesError(notesProblem);
+    if (missingTargetUsers || notesProblem) return;
 
     trackEvent('help-desk-form-submit');
 
@@ -392,16 +410,33 @@ export default function HelpDeskForm() {
 
         <div className="ds-form__field">
           <label htmlFor="hd-notes" className="ds-form-label">
-            Is there other things regarding your enquiry we should know about?
+            Is there anything else about your enquiry we should know?
+            {needsNotes && <span className="ds-form-label__required">*</span>}
           </label>
           <textarea
             id="hd-notes"
-            className="ds-form-input"
+            className={`ds-form-input${notesError ? ' ds-form-input--error' : ''}`}
             maxLength={1000}
             name="notes"
+            aria-describedby="hd-notes-hint"
+            aria-invalid={notesError !== '' || undefined}
             value={notes}
-            onChange={(e) => setNotes(e.target.value)}
+            onChange={(e) => {
+              setNotes(e.target.value);
+              if (e.target.value.trim().length >= MIN_OTHER_NOTES) setNotesError('');
+            }}
           />
+          <p id="hd-notes-hint" className="ds-form-hint">
+            Required if you chose Other: tell us what you need help with, in at least{' '}
+            {MIN_OTHER_NOTES} characters.
+          </p>
+          {notesError && (
+            <p className="ds-form-field-error" role="alert">
+              {notesError === 'missing'
+                ? 'Tell us what your enquiry is about so we can help.'
+                : `Please add a bit more detail (at least ${MIN_OTHER_NOTES} characters) so we can help.`}
+            </p>
+          )}
         </div>
 
         {status === 'error' && (
