@@ -63,6 +63,7 @@ export const NO_ZH_HANT_PATHS: readonly string[] = [
   '/help-desk/',
   '/once/license/',
   '/sovereign-login-checklist/',
+  '/sovereignty-self-check/',
 ];
 
 /** Like `NO_ZH_HANT_PATHS`, for every page under a prefix (a dynamic route). */

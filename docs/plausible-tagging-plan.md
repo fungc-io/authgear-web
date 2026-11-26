@@ -90,8 +90,9 @@ These indicate the user took a meaningful step toward becoming a customer.
 | `signup` | `McpAuthenticationPage` — hero "Start for free" and footer CTA "Start for free" | Click | `portal.authgear.com` (with UTM) — fires with `props.location` = `mcp-hero` \| `mcp-footer` |
 | `get-demo` | `KeycloakAlternativePage` — hero and migration band "Book a sovereignty review" (en, de, fr; "Book a 30-min review" on phones in the hero), "Schedule Demo" in es | Click | `/schedule-demo?topic=sovereignty-review` (English page for every campaign locale; es keeps `/es/schedule-demo`) — fires with `props.location` = `keycloak-alternative-hero` \| `keycloak-alternative-migrate` |
 | `get-demo` | `DataSovereigntyPage` — "Book a sovereignty review" (Private cloud column and note under the table, FAQ cost answer, closing CTA) and "Plan your migration" (migration callout) in en, de, fr; "Talk to us" in es and zh-Hant | Click | `/schedule-demo?topic=sovereignty-review` (English page for every campaign locale; es and zh-Hant keep their own `/schedule-demo`) — fires with `props.location` = `data-sovereignty-table` \| `data-sovereignty-faq` \| `data-sovereignty-migration` \| `data-sovereignty-footer` |
-| `checklist-download` | `/sovereign-login-checklist` — gated form (name, work email, company, role, optional marketing consent) | Netlify Forms POST returns OK (not on a honeypot hit) | Netlify Forms (`sovereign-login-checklist`), then the PDF in a new tab — fires with `props.location = 'checklist-page'`. **Not yet registered in Plausible**; the goal and the LinkedIn/GTM conversion are set up separately |
-| `get-demo` | `/sovereign-login-checklist` — "Book a 30-minute sovereignty review" link in the confirmation | Click | `/schedule-demo?topic=sovereignty-review` — fires with `props.location = 'checklist-confirmation'` |
+| `checklist-download` | `SovereignChecklistForm` on `/sovereign-login-checklist` and `/sovereignty-self-check` — gated form (name, work email, company, role, optional marketing consent) | Netlify Forms POST returns OK (not on a honeypot hit) | Netlify Forms (`sovereign-login-checklist`, with `source` = `sovereign-login-checklist` \| `sovereignty-self-check`), then the PDF in a new tab — fires with `props.location` = `checklist-page` \| `self-check`. **Not yet registered in Plausible**; the goal and the LinkedIn/GTM conversion are set up separately |
+| `get-demo` | `SovereignChecklistForm` — "Book a 30-minute sovereignty review" link in the confirmation | Click | `/schedule-demo?topic=sovereignty-review` — fires with `props.location` = `checklist-confirmation` (checklist page) \| `self-check-confirmation` (self-check page) |
+| `get-demo` | `/sovereignty-self-check` — "Book a 30-minute sovereignty review" in the CTA block | Click | `/schedule-demo?topic=sovereignty-review` — fires with `props.location = 'self-check'` |
 
 ### Engagement events
 
@@ -99,6 +100,9 @@ These indicate the user is exploring content or interacting with features.
 
 | Event | Component | Trigger | Notes |
 |-------|-----------|---------|-------|
+| `self-check-start` | `SovereigntySelfCheck` island on `/sovereignty-self-check` | First answer chosen | No props. Answers never leave the browser. Not yet registered in Plausible |
+| `self-check-complete` | `SovereigntySelfCheck` | "See my result" (all ten answered) | `props.score` (0–10), `props.band` = `high` \| `mid` \| `low`. Not yet registered in Plausible |
+| `self-check-copy` | `SovereigntySelfCheck` — "Copy results" | Click | No props. Not yet registered in Plausible |
 | `checklist-click` | `DataSovereigntyPage` (en only) — "Download the sovereign login checklist" under the FAQ; UK guide post `uk-data-sovereignty-login-identity` — same link after its checklist | Click | `/sovereign-login-checklist` — fires with `props.location` = `data-sovereignty` \| `uk-guide`. Not yet registered in Plausible |
 | `calculator-preset` | `ReduceSmsOtpCostPage` — preset buttons (10K / 100K / 500K / 1M) | Click | Fires on every preset button; no distinction between which preset was selected |
 | `calculator-open` | `ReduceSmsOtpCostPage` — hero "Calculate My Savings" | Click | `#Saving-Calculator` anchor scroll — renamed from `signup-calculator` in Aug 2026 (it never was a signup click) |
@@ -192,7 +196,7 @@ conversions) is granted, using the built-in consent checks.
 | Event | Component | Trigger | Fields |
 |-------|-----------|---------|--------|
 | `contact_form_submit` | `ContactForm` (every page that embeds it, incl. `/schedule-demo` and `/solutions/data-sovereignty`) | Netlify Forms POST returns OK | `form_page` — `location.pathname` (no query string); `topic` — `?topic=` query param, or `''` |
-| `checklist_download` | `/sovereign-login-checklist` | Netlify Forms POST returns OK | `form_page` (pathname). No name, email, company or role |
+| `checklist_download` | `/sovereign-login-checklist`, `/sovereignty-self-check` | Netlify Forms POST returns OK | `form_page` (pathname). No name, email, company or role |
 
 `topic` tags campaign entry points, e.g.
 `/schedule-demo?topic=sovereignty-review`. It is also sent to Netlify Forms as
