@@ -41,7 +41,7 @@ export const jwtJwe = {
     'Encrypt a signed JWT into a JWE (JSON Web Encryption) using a public key to produce confidential tokens. Use JWE when you need payload confidentiality in addition to signature integrity. (See "',
   s4GuideLinkLabel: 'JWE vs JWT',
   s4i1Part2: '" in our guide for when to use each.)',
-  s4GuideLink: '/post/jwe-vs-jwt',
+  s4GuideLink: '/post/jwe-vs-jwt/',
   s5Label: 'Step 5.',
   s5Title: 'Decrypt JWE:',
   s5i1:
