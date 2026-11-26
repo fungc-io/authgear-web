@@ -1,6 +1,7 @@
 ---
 import { t } from '@/i18n';
 import { localizedPath } from '@/lib/i18n';
+import CompareOpenSourceSection from './CompareOpenSourceSection.astro';
 
 interface Props {
   locale: string;
@@ -60,6 +61,7 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
       <img src="/images/compare_logo-MTR-gray2x.png" loading="lazy" alt="" class="image-86" />
     </div>
   </div>
+  <CompareOpenSourceSection locale={locale} />
   <div>
     <div class="container-default wider-container-default">
       <div class="container-default-inner px-0 gap-0 pb-0">
@@ -204,6 +206,16 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
             </div>
           </div>
           <div class="w-layout-grid table-header table-content">
+            <div class="table-text title">{tCompare('tableOpenSourceTitle')}</div>
+            <div class="table-text">{tCompare('tableOpenSourceAuthgear')}</div>
+            <div class="table-text">{tCompare('tableNo')}</div>
+          </div>
+          <div class="w-layout-grid table-header table-content">
+            <div class="table-text title">{tCompare('tableSelfHostTitle')}</div>
+            <div class="table-text">{tCompare('tableYes')}</div>
+            <div class="table-text">{tCompare('tableNo')}</div>
+          </div>
+          <div class="w-layout-grid table-header table-content">
             <div class="table-text title">
               {tAuth0('tableScalingTitle')}
             </div>
@@ -261,11 +273,8 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
             <div class="table-text">
               {tAuth0('tableUnlimited')}
             </div>
-            <div class="compare-table-multi-info">
-              <img src="/images/compare_table-false.svg" loading="lazy" alt="" />
-              <div class="compare-table-text-light title">
-                {tAuth0('tableEnterprisePlanRequired')}
-              </div>
+            <div class="table-text">
+              {tAuth0('tableEnterpriseConnectionAuth0')}
             </div>
           </div>
           <div class="w-layout-grid table-header table-content">
@@ -274,9 +283,7 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
             </div>
             <img src="/images/compare_table-check-blue.svg" loading="lazy" alt="" />
             <div class="table-text">
-              {tAuth0('tableAccountDedupAuth0Line1')}
-              <br />
-              {tAuth0('tableAccountDedupAuth0Line2')}
+              {tAuth0('tableAccountDedupAuth0')}
             </div>
           </div>
           <div class="w-layout-grid table-header table-content">
@@ -326,6 +333,10 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
             <img src="/images/compare_table-false.svg" loading="lazy" alt="" />
           </div>
         </div>
+        <p class="compare-post-link">
+          {tAuth0('openSourcePostPre')}
+          <a href={localizedPath(locale, '/post/top-open-source-auth0-alternatives')}>{tAuth0('openSourcePostLink')}</a>{tAuth0('openSourcePostPost')}
+        </p>
       </div>
     </div>
   </div>
@@ -367,6 +378,18 @@ const tAuth0 = (key: string) => t(locale, `Auth0Alternative.${key}`);
 </>
 
 <style>
+  .compare-post-link {
+    margin: 1.5rem 0 0;
+    text-align: center;
+    color: #626262;
+  }
+
+  .compare-post-link a {
+    color: #0043e0;
+    text-decoration: underline;
+    text-underline-offset: 0.125rem;
+  }
+
   /* Inline link on the dark "ready to switch" band. */
   .compare-sovereignty-note {
     margin: 0.75rem 0 0;

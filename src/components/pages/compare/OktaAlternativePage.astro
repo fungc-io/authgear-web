@@ -1,6 +1,7 @@
 ---
 import { t } from '@/i18n';
 import { localizedPath } from '@/lib/i18n';
+import CompareOpenSourceSection from './CompareOpenSourceSection.astro';
 
 interface Props {
   locale: string;
@@ -38,6 +39,7 @@ const { locale } = Astro.props;
       <img src="/images/compare_logo-MTR-gray2x.png" loading="lazy" alt="" class="image-86" />
     </div>
   </div>
+  <CompareOpenSourceSection locale={locale} />
   <div>
     <div class="container-default wider-container-default">
       <div class="container-default-inner px-0 gap-0 pb-0">
@@ -117,6 +119,16 @@ const { locale } = Astro.props;
             <div class="w-layout-blockcontainer w-container"></div>
             <img src="/images/compare_table-Authgear.svg" loading="lazy" alt="" />
             <div class="okta">{t(locale, 'OktaAlternative.competitorName')}</div>
+          </div>
+          <div class="w-layout-grid table-header table-content">
+            <div class="table-text title">{t(locale, 'Compare.tableOpenSourceTitle')}</div>
+            <div class="table-text">{t(locale, 'Compare.tableOpenSourceAuthgear')}</div>
+            <div class="table-text">{t(locale, 'Compare.tableNo')}</div>
+          </div>
+          <div class="w-layout-grid table-header table-content">
+            <div class="table-text title">{t(locale, 'Compare.tableSelfHostTitle')}</div>
+            <div class="table-text">{t(locale, 'Compare.tableYes')}</div>
+            <div class="table-text">{t(locale, 'Compare.tableNo')}</div>
           </div>
           <div class="w-layout-grid table-header table-content">
             <div class="table-text title">{t(locale, 'OktaAlternative.tableScalingTitle')}</div>
