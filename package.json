@@ -17,6 +17,7 @@
     "symlink-zh-images": "node scripts/symlink-zh-hant-images.mjs"
   },
   "dependencies": {
+    "@astrojs/markdown-satteri": "0.4.3",
     "@astrojs/netlify": "^8.2.10",
     "@astrojs/react": "^5.0.4",
     "@astrojs/sitemap": "^3.7.2",

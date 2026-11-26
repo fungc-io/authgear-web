@@ -268,7 +268,7 @@ test.describe('links into /solutions/data-sovereignty', () => {
   test('the Auth0 alternatives post links to the page', async ({ page }) => {
     await page.goto('/post/top-open-source-auth0-alternatives/');
     await expect(
-      page.locator('.blog-post__body a[href="/solutions/data-sovereignty"]'),
+      page.locator('.blog-post__body a[href="/solutions/data-sovereignty/"]'),
     ).toHaveCount(1);
   });
 });

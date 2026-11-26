@@ -12,7 +12,7 @@ const POSTS = [
     h1: 'Souveraineté numérique',
     faq: 'Questions fréquentes',
     updated: 'Dernière mise à jour',
-    links: ['/fr/solutions/data-sovereignty', '/fr/compare/keycloak-alternative', '/fr/schedule-demo', '/dpa'],
+    links: ['/fr/solutions/data-sovereignty/', '/fr/compare/keycloak-alternative/', '/fr/schedule-demo/', '/dpa/'],
   },
   {
     lang: 'de',
@@ -20,7 +20,7 @@ const POSTS = [
     h1: 'Digitale Souveränität',
     faq: 'Häufige Fragen',
     updated: 'Zuletzt aktualisiert',
-    links: ['/de/solutions/data-sovereignty', '/de/compare/keycloak-alternative', '/de/schedule-demo', '/sub-processors'],
+    links: ['/de/solutions/data-sovereignty/', '/de/compare/keycloak-alternative/', '/de/schedule-demo/', '/sub-processors/'],
   },
 ] as const;
 
@@ -46,7 +46,7 @@ for (const post of POSTS) {
       const body = page.locator('.blog-post__body');
       for (const href of post.links) {
         await expect(body.locator(`a[href="${href}"]`), href).toHaveCount(
-          href.endsWith('data-sovereignty') ? 2 : 1,
+          href.endsWith('data-sovereignty/') ? 2 : 1,
         );
       }
     });

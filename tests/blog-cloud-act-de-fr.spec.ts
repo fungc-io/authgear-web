@@ -37,15 +37,15 @@ test.describe('CLOUD Act explainer (de + fr)', () => {
   test('each post links to its own localised pages', async ({ page }) => {
     await page.goto(DE_POST);
     let body = page.locator('.blog-post__body');
-    await expect(body.locator('a[href="/de/solutions/data-sovereignty"]')).toHaveCount(1);
-    await expect(body.locator('a[href="/de/compare/keycloak-alternative"]')).toHaveCount(1);
-    await expect(body.locator('a[href="/dpa"]')).toHaveCount(1);
-    await expect(body.locator('a[href="/sub-processors"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/de/solutions/data-sovereignty/"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/de/compare/keycloak-alternative/"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/dpa/"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/sub-processors/"]')).toHaveCount(1);
 
     await page.goto(FR_POST);
     body = page.locator('.blog-post__body');
-    await expect(body.locator('a[href="/fr/solutions/data-sovereignty"]')).toHaveCount(1);
-    await expect(body.locator('a[href="/fr/compare/keycloak-alternative"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/fr/solutions/data-sovereignty/"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/fr/compare/keycloak-alternative/"]')).toHaveCount(1);
   });
 
   test('both posts emit Article and FAQPage JSON-LD', async ({ page }) => {

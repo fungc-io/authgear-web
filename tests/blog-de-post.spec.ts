@@ -28,10 +28,10 @@ test.describe('German blog post', () => {
   test('German post links to the German product pages and the English related posts', async ({ page }) => {
     await page.goto(DE_POST);
     const body = page.locator('.blog-post__body');
-    await expect(body.locator('a[href="/de/solutions/data-sovereignty"]')).toHaveCount(1);
-    await expect(body.locator('a[href="/de/compare/keycloak-alternative"]')).toHaveCount(1);
-    await expect(body.locator('a[href="/de/schedule-demo"]')).toHaveCount(1);
-    await expect(body.locator('a[href="/post/oidc-vs-saml"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/de/solutions/data-sovereignty/"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/de/compare/keycloak-alternative/"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/de/schedule-demo/"]')).toHaveCount(1);
+    await expect(body.locator('a[href="/post/oidc-vs-saml/"]')).toHaveCount(1);
   });
 
   test('German post emits Article and FAQPage JSON-LD', async ({ page }) => {
