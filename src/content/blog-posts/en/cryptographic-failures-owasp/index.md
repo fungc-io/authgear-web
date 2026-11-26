@@ -123,7 +123,7 @@ As a developer or security professional, it’s also wise to stay updated. Threa
 
 Finally, consider leveraging tools and services that **take the heavy lifting of security off your shoulders**. For example, Authgear provides a ready-made authentication and user management solution with robust security built-in – including encrypted data storage, secure token handling, and adherence to cryptographic best practices out of the box. Instead of reinventing the wheel (and risking mistakes), you can rely on such a platform to handle sensitive user data in a compliant, secure manner.
 
-**Get started with Authgear** – [sign up for a free trial](http://portal.authgear.com/) or [request a demo today](/schedule-demo) – and see how easy it is to integrate strong security into your applications. Don’t wait until after a breach to prioritize cryptography; start preventing cryptographic failures now and stay ahead of threats. Your data deserves nothing less than the best protection.
+**Get started with Authgear** – [sign up for a free trial](https://portal.authgear.com/) or [request a demo today](/schedule-demo) – and see how easy it is to integrate strong security into your applications. Don’t wait until after a breach to prioritize cryptography; start preventing cryptographic failures now and stay ahead of threats. Your data deserves nothing less than the best protection.
 
 ## FAQ: Cryptographic Failures (OWASP Top 10 A02)
 
