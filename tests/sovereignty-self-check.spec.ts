@@ -222,3 +222,27 @@ test.describe('/sovereignty-self-check on a 360px phone', () => {
       .toBe(16);
   });
 });
+
+test.describe('links to /sovereignty-self-check', () => {
+  for (const [path, location] of [
+    ['/sovereign-login-checklist/', 'checklist-page'],
+    ['/solutions/data-sovereignty/', 'data-sovereignty'],
+    ['/post/uk-data-sovereignty-login-identity/', 'uk-guide'],
+    ['/post/sovereign-cloud-cloud-act-login-data/', 'cloud-act-guide'],
+  ] as const) {
+    test(`${path} links to the self-check`, async ({ page }) => {
+      await page.goto(path);
+      const link = page.locator(`a[href="${PATH}"].plausible-event-location--${location}`);
+      await expect(link).toHaveCount(1);
+      await expect(link).toHaveClass(/plausible-event-name--self-check-click/);
+      await expect(link).toBeVisible();
+    });
+  }
+
+  test('the CLOUD Act post now links to the checklist too', async ({ page }) => {
+    await page.goto('/post/sovereign-cloud-cloud-act-login-data/');
+    await expect(
+      page.locator('a[href="/sovereign-login-checklist/"].plausible-event-location--cloud-act-guide'),
+    ).toHaveCount(1);
+  });
+});

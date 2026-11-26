@@ -114,6 +114,8 @@ Copy these into your vendor questionnaire:
 - [ ] Can we export all user data, including password hashes, if we leave?
 - [ ] Can we self-host the same product if our requirements change?
 
+Not sure which of these you can answer about your own setup? <a href="/sovereignty-self-check/" class="plausible-event-name--self-check-click plausible-event-location--cloud-act-guide"><span style="white-space:nowrap">Take the 2-minute self-check</span></a>, or <a href="/sovereign-login-checklist/" class="plausible-event-name--checklist-click plausible-event-location--cloud-act-guide">download the full checklist</a> with 20 questions and what a good answer looks like.
+
 ## Where Authgear fits
 
 - **Open source.** Authgear is licensed under Apache-2.0. The self-hosted version has every feature, and you connect your own email, SMS and WhatsApp providers. Run it on your own servers or with any UK or European hosting provider, and your user data does not reach our servers.
