@@ -148,6 +148,8 @@ Copy these into your vendor questionnaire:
 
 Want the full version, with 20 questions and what a good answer looks like for each? <a href="/sovereign-login-checklist/" class="plausible-event-name--checklist-click plausible-event-location--uk-guide">Download the sovereign login checklist.</a>
 
+Not sure which of these you can answer today? <a href="/sovereignty-self-check/" class="plausible-event-name--self-check-click plausible-event-location--uk-guide"><span style="white-space:nowrap">Take the 2-minute self-check.</span></a>
+
 ## Where Authgear fits
 
 We'll be plain about what Authgear offers today.

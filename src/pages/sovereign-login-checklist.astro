@@ -49,6 +49,10 @@ const inside = [
                 </li>
               ))}
             </ul>
+            <p class="checklist__self-check">
+              Not sure where to start?{' '}
+              <a href="/sovereignty-self-check/" class="plausible-event-name--self-check-click plausible-event-location--checklist-page">Take the 2-minute self-check.</a>
+            </p>
             <p class="checklist__audience">
               For CTOs, engineering and platform leads, and security and data protection teams in
               the UK and Europe.
@@ -117,6 +121,18 @@ const inside = [
   .checklist__inside strong {
     color: #9cc0ff;
     font-weight: 600;
+  }
+  .checklist__self-check {
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.88);
+  }
+  .checklist__self-check a {
+    color: #9cc0ff;
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
   }
   .checklist__audience {
     margin: 4px 0 0;
