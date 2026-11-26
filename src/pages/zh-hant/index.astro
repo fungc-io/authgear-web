@@ -2,6 +2,7 @@
 export const prerender = true;
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import HomePage from '@/components/pages/HomePage.astro';
+import OrganizationJsonLd from '@/components/seo/OrganizationJsonLd.astro';
 import { t } from '@/i18n';
 
 const locale = 'zh-Hant';
@@ -11,6 +12,7 @@ const description = t(locale, 'Seo.home.description');
 
 <BaseLayout locale={locale} title={title} description={description} theme="dark">
   <Fragment slot="head">
+    <OrganizationJsonLd />
     {/* Hero is a CSS background that swaps at 768px. Preload the matching
         asset per breakpoint so we don't waste the LCP budget on the wrong
         image — webflow.css renders -m2x below 768px and -pc2x above.
