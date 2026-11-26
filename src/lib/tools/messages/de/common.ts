@@ -54,7 +54,6 @@ export const registry = {
   'jwt-jwe-debugger': { label: 'JWT- & JWE-Debugger' },
   'jwk-generator': { label: 'JWK-Generator' },
   'hmac-signature-generator-verifier': { label: 'HMAC-Tool' },
-  saml: { label: 'SAML-Testtool' },
   'totp-authenticator': { label: 'TOTP-Authenticator' },
   'password-hash-generator': { label: 'Passwort-Hash-Generator' },
   'base64-decode-encode': { label: 'Base64 dekodieren und kodieren' },
