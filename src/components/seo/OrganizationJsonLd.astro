@@ -1,0 +1,24 @@
+---
+// schema.org Organization for Authgear, emitted on the home page of every
+// locale. Search engines and AI answer engines read it to connect the site
+// to the company, its logo and its official profiles.
+const organizationLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://www.authgear.com/#organization',
+  name: 'Authgear',
+  url: 'https://www.authgear.com/',
+  logo: 'https://www.authgear.com/images/authgear-logo.png',
+  sameAs: [
+    'https://github.com/authgear',
+    'https://www.linkedin.com/company/authgear',
+  ],
+  parentOrganization: {
+    '@type': 'Organization',
+    name: 'Skymakers Digital Limited',
+    url: 'https://skymakers.digital/',
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(organizationLd)} />

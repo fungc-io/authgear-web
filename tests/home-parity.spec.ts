@@ -47,3 +47,20 @@ test.describe('home page parity — islands hydrate', () => {
 // Netlify's form-handler endpoint, which only resolves on the Netlify
 // runtime — not under `astro dev`. Verify the happy path on the deploy
 // preview instead.
+
+test.describe('home page Organization structured data', () => {
+  for (const path of ['/', '/zh-hant/', '/ja/', '/de/', '/fr/', '/es/']) {
+    test(`${path} emits Organization JSON-LD`, async ({ page }) => {
+      await page.goto(path);
+      const blocks = await page.locator('script[type="application/ld+json"]').evaluateAll((els) =>
+        els.map((el) => JSON.parse(el.textContent ?? '{}')),
+      );
+      const org = blocks.find((b) => b['@type'] === 'Organization');
+      expect(org, 'Organization block').toBeDefined();
+      expect(org.name).toBe('Authgear');
+      expect(org.url).toBe('https://www.authgear.com/');
+      expect(org.logo).toMatch(/^https:\/\/www\.authgear\.com\/images\/.+\.png$/);
+      expect(org.sameAs).toContain('https://github.com/authgear');
+    });
+  }
+});

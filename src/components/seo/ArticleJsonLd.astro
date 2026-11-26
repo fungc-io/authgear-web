@@ -1,0 +1,44 @@
+---
+// schema.org Article for content pages outside the blog (customer stories,
+// What's new). Same shape as the blog's Article in BlogPostSeo.astro, so
+// search and AI answer engines read every article on the site the same way.
+import type { ImageMetadata } from 'astro';
+import { getImage } from 'astro:assets';
+
+interface Props {
+  title: string;
+  description?: string;
+  image: ImageMetadata;
+  publishedAt: Date;
+}
+
+const { title, description, image, publishedAt } = Astro.props;
+
+const optimizedImage = await getImage({ src: image, width: 1200 });
+
+const articleLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  ...(description ? { description } : {}),
+  image: [new URL(optimizedImage.src, Astro.site).href],
+  datePublished: publishedAt.toISOString(),
+  dateModified: publishedAt.toISOString(),
+  author: {
+    '@type': 'Organization',
+    name: 'Authgear',
+    url: 'https://www.authgear.com',
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Authgear',
+    logo: {
+      '@type': 'ImageObject',
+      url: 'https://www.authgear.com/images/authgear-logo.png',
+    },
+  },
+  mainEntityOfPage: new URL(Astro.url.pathname, Astro.site).href,
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(articleLd)} />

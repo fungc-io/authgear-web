@@ -34,3 +34,18 @@ test.describe('Phase 3-3: /login-gallery + /whats-new', () => {
     expect(cc).toMatch(/s-maxage=\d+/);
   });
 });
+
+test.describe("What's new structured data", () => {
+  for (const path of ['/whats-new/2026-08-26/', '/zh-hant/whats-new/2026-08-26/']) {
+    test(`${path} emits Article JSON-LD`, async ({ page }) => {
+      await page.goto(path);
+      const blocks = await page.locator('script[type="application/ld+json"]').evaluateAll((els) =>
+        els.map((el) => JSON.parse(el.textContent ?? '{}')),
+      );
+      const article = blocks.find((b) => b['@type'] === 'Article');
+      expect(article, 'Article block').toBeDefined();
+      expect(article.headline).toBe(await page.locator('h1').first().innerText());
+      expect(article.mainEntityOfPage).toBe(await page.locator('link[rel="canonical"]').getAttribute('href'));
+    });
+  }
+});

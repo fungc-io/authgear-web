@@ -497,7 +497,7 @@ Key points:
 - **WWW-Authenticate headers**: Authgear's OAuth token endpoint and resource server integrations return properly formed `WWW-Authenticate: Bearer` headers with RFC 6750-compliant error codes.
 - **Clock skew tolerance**: Authgear applies a configurable leeway on token verification to handle minor clock drift in distributed deployments.
 
-If your 401 errors come from mismatched configuration between Authgear and your resource server — wrong `aud`, wrong JWKS URL, or missing `Authorization` forwarding in your proxy — the [Authgear documentation](/docs/get-started/start-building) walks through correct resource server integration patterns for common frameworks.
+If your 401 errors come from mismatched configuration between Authgear and your resource server — wrong `aud`, wrong JWKS URL, or missing `Authorization` forwarding in your proxy — the [Authgear documentation](https://docs.authgear.com/get-started/backend-api) walks through correct resource server integration patterns for common frameworks.
 
 ## Frequently Asked Questions
 
