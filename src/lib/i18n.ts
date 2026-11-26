@@ -50,13 +50,27 @@ const PARTIAL_LOCALE_PATH_PREFIXES = ['/tools/'] as const;
 
 /**
  * Pages with no Traditional Chinese twin (`src/pages/zh-hant/`), the only
- * full-coverage locale besides English: legal pages and pages aimed at UK/EU
- * buyers. zh-Hant links to, and advertises, the English page instead of a
+ * full-coverage locale besides English: legal pages, the ONCE license, the
+ * integration categories and pages aimed at UK/EU buyers. zh-Hant links to, and advertises, the English page instead of a
  * prefixed URL that would 404. A partial locale can still translate such a
  * page through `PARTIAL_LOCALE_EXTRA_PATHS`. Keep in sync with `src/pages/`;
  * `i18n.test.ts` checks each entry against disk.
  */
-export const NO_ZH_HANT_PATHS: readonly string[] = ['/dpa/', '/sub-processors/', '/compare/keycloak-alternative/', '/help-desk/'];
+export const NO_ZH_HANT_PATHS: readonly string[] = [
+  '/dpa/',
+  '/sub-processors/',
+  '/compare/keycloak-alternative/',
+  '/help-desk/',
+  '/once/license/',
+  '/sovereign-login-checklist/',
+];
+
+/** Like `NO_ZH_HANT_PATHS`, for every page under a prefix (a dynamic route). */
+export const NO_ZH_HANT_PATH_PREFIXES: readonly string[] = ['/integration-category/'];
+
+function hasNoZhHantPage(path: string): boolean {
+  return NO_ZH_HANT_PATHS.includes(path) || NO_ZH_HANT_PATH_PREFIXES.some((prefix) => path.startsWith(prefix));
+}
 
 /**
  * Paths translated for some partial locales but not all of them. Each entry
@@ -159,7 +173,7 @@ export function hasLocalizedPage(locale: string, pathname: string): boolean {
   if (locale === DEFAULT_LOCALE) return true;
   if (BLOG_ONLY_LOCALES.includes(locale as Locale)) return isTranslatedPostPath(locale, pathname);
   const path = withTrailingSlash(pathname);
-  if (!PARTIAL_LOCALES.includes(locale as Locale)) return !NO_ZH_HANT_PATHS.includes(path);
+  if (!PARTIAL_LOCALES.includes(locale as Locale)) return !hasNoZhHantPage(path);
   if (isPartialLocalePath(pathname)) return true;
   if (PARTIAL_LOCALE_EXTRA_PATHS[locale as Locale]?.includes(path)) return true;
   if (isTranslatedPostPath(locale, pathname)) return true;

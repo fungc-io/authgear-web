@@ -170,7 +170,7 @@ describe('PARTIAL_LOCALE_POST_SLUGS', () => {
 });
 
 import { existsSync } from 'node:fs';
-import { NO_ZH_HANT_PATHS, PARTIAL_LOCALE_EXTRA_PATHS } from './i18n';
+import { NO_ZH_HANT_PATHS, NO_ZH_HANT_PATH_PREFIXES, PARTIAL_LOCALE_EXTRA_PATHS } from './i18n';
 
 describe('NO_ZH_HANT_PATHS', () => {
   it('each has an English route (static file or dynamic sibling) and no zh-hant route on disk', () => {
@@ -193,6 +193,19 @@ describe('NO_ZH_HANT_PATHS', () => {
     }
     expect(localizedPath('zh-Hant', '/dpa')).toBe('/dpa/');
     expect(localizedPath('zh-Hant', '/about')).toBe('/zh-hant/about/');
+  });
+
+  it('pages under a prefix have an English dynamic route, no zh-hant one, and are never advertised in zh-Hant', () => {
+    for (const prefix of NO_ZH_HANT_PATH_PREFIXES) {
+      const dir = prefix.replace(/^\//, '');
+      expect(existsSync(new URL(`../pages/${dir}[slug].astro`, import.meta.url)), `English route under ${prefix}`).toBe(true);
+      expect(existsSync(new URL(`../pages/zh-hant/${dir}`, import.meta.url)), `src/pages/zh-hant/${dir}`).toBe(false);
+      const page = `${prefix}marketing/`;
+      expect(hasLocalizedPage('zh-Hant', page)).toBe(false);
+      expect(localesWithPage(page)).toEqual(['en']);
+      expect(localizedPath('zh-Hant', page)).toBe(page);
+    }
+    expect(localesWithPage('/integrations/slack/')).toContain('zh-Hant');
   });
 
   it('legal pages are English only; the Keycloak page adds es, de and fr', () => {
