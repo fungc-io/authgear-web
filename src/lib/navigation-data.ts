@@ -189,7 +189,6 @@ export const footerStrings: Record<string, Record<string, string>> = {
   jwkGenerator: { en: 'JWK Generator', 'zh-Hant': 'JWK 產生器', ja: 'JWK ジェネレーター', es: 'Generador de JWK', de: 'JWK-Generator', fr: 'Générateur JWK' },
   passwordHash: { en: 'Password Hash Generator/Verifier', 'zh-Hant': '密碼雜湊產生／驗證', ja: 'パスワードハッシュ生成・検証', es: 'Generador/verificador de hashes de contraseña', de: 'Passwort-Hash-Generator/-Verifier', fr: 'Générateur/vérificateur de hachage de mot de passe' },
   hmacSignature: { en: 'HMAC Signature Generator/Verifier', 'zh-Hant': 'HMAC 簽章產生／驗證', ja: 'HMAC 署名生成・検証', es: 'Generador/verificador de firmas HMAC', de: 'HMAC-Signatur-Generator/-Verifier', fr: 'Générateur/vérificateur de signature HMAC' },
-  samlTestingTool: { en: 'SAML Testing Tool', 'zh-Hant': 'SAML 測試工具', ja: 'SAML テストツール', es: 'Herramienta de pruebas SAML', de: 'SAML-Testtool', fr: 'Outil de test SAML' },
   totpAuthenticator: { en: 'TOTP Authenticator', 'zh-Hant': 'TOTP 驗證器', ja: 'TOTP オーセンティケーター', es: 'Autenticador TOTP', de: 'TOTP-Authenticator', fr: 'Authentificateur TOTP' },
   passkeyDemo: { en: 'Passkey Demo & WebAuthn Tester', 'zh-Hant': '通行密鑰示範與 WebAuthn 測試工具', ja: 'パスキーデモ & WebAuthn テスター', es: 'Demo de passkeys y probador WebAuthn', de: 'Passkey-Demo & WebAuthn-Tester', fr: 'Démo passkeys et testeur WebAuthn' },
   smsCostCalculator: { en: 'SMS Cost Calculator', 'zh-Hant': '簡訊成本計算器', ja: 'SMS コスト計算ツール', es: 'Calculadora de costes de SMS', de: 'SMS-Kostenrechner', fr: 'Calculateur de coûts SMS' },

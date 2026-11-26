@@ -45,9 +45,6 @@ export const registry = {
   "hmac-signature-generator-verifier": {
     "label": "Herramienta HMAC"
   },
-  "saml": {
-    "label": "Herramienta de pruebas SAML"
-  },
   "totp-authenticator": {
     "label": "Autenticador TOTP"
   },
