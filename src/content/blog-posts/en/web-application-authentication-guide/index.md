@@ -394,4 +394,4 @@ authgear.<span class="function">finishAuthorization</span>().<span class="functi
 
 <a href="/schedule-demo/" target="_blank">Contact us</a> to learn more about how Authgear can help you improve user experience, increase conversion rate, and ensure security for your apps.
 
-You may also refer to our <a href="https://docs.authgear.com/" target="_blank">Authgear Docs</a> for more instructions. Or join our [Discord server ](https://discord.gg/Kdn5vcYwAS)to learn more about web application authentication
+You may also refer to our <a href="https://docs.authgear.com/" target="_blank">Authgear Docs</a> for more instructions. Or join our [Discord server ](https://discord.com/invite/Kdn5vcYwAS)to learn more about web application authentication

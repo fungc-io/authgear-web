@@ -151,12 +151,12 @@ test.describe('/solutions/data-sovereignty', () => {
   // --- FAQ: nine questions, with FAQPage structured data on every locale ---
 
   const LOCALE_PATHS = [
-    { lang: 'en', path: PATH, keycloak: '/compare/keycloak-alternative/', cloudAct: '/post/uk-data-sovereignty-login-identity' },
+    { lang: 'en', path: PATH, keycloak: '/compare/keycloak-alternative/', cloudAct: '/post/uk-data-sovereignty-login-identity/' },
     // zh-Hant is the Taiwan page: EU framing removed, no CLOUD Act answer.
     { lang: 'zh-Hant', path: `/zh-hant${PATH}`, keycloak: '/compare/keycloak-alternative/', cloudAct: null },
-    { lang: 'de', path: `/de${PATH}`, keycloak: '/de/compare/keycloak-alternative/', cloudAct: '/de/post/cloud-act-login-anbieter-nutzerdaten' },
-    { lang: 'es', path: `/es${PATH}`, keycloak: '/es/compare/keycloak-alternative/', cloudAct: '/post/uk-data-sovereignty-login-identity' },
-    { lang: 'fr', path: `/fr${PATH}`, keycloak: '/fr/compare/keycloak-alternative/', cloudAct: '/fr/post/cloud-act-fournisseur-identite-donnees-connexion' },
+    { lang: 'de', path: `/de${PATH}`, keycloak: '/de/compare/keycloak-alternative/', cloudAct: '/de/post/cloud-act-login-anbieter-nutzerdaten/' },
+    { lang: 'es', path: `/es${PATH}`, keycloak: '/es/compare/keycloak-alternative/', cloudAct: '/post/uk-data-sovereignty-login-identity/' },
+    { lang: 'fr', path: `/fr${PATH}`, keycloak: '/fr/compare/keycloak-alternative/', cloudAct: '/fr/post/cloud-act-fournisseur-identite-donnees-connexion/' },
   ] as const;
 
   for (const { lang, path, keycloak, cloudAct } of LOCALE_PATHS) {
@@ -268,7 +268,7 @@ test.describe('links into /solutions/data-sovereignty', () => {
   test('the Auth0 alternatives post links to the page', async ({ page }) => {
     await page.goto('/post/top-open-source-auth0-alternatives/');
     await expect(
-      page.locator('.blog-post__body a[href="/solutions/data-sovereignty"]'),
+      page.locator('.blog-post__body a[href="/solutions/data-sovereignty/"]'),
     ).toHaveCount(1);
   });
 });

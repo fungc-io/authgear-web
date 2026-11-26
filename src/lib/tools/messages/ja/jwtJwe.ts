@@ -41,7 +41,7 @@ export const jwtJwe = {
     '公開鍵を使って署名付き JWT を JWE（JSON Web Encryption）に暗号化し、機密性のあるトークンを生成します。署名による完全性に加えてペイロードの機密性が必要な場合に JWE を使います。（使い分けはガイド「',
   s4GuideLinkLabel: 'JWE と JWT の違い',
   s4i1Part2: '」をご覧ください。）',
-  s4GuideLink: '/post/jwe-vs-jwt',
+  s4GuideLink: '/post/jwe-vs-jwt/',
   s5Label: 'ステップ 5.',
   s5Title: 'JWE を復号する:',
   s5i1:

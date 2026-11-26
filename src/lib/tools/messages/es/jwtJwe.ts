@@ -30,7 +30,7 @@ export const jwtJwe = {
   s4i1Part1: "Cifra un JWT firmado en un JWE (JSON Web Encryption) con una clave pública para producir tokens confidenciales. Usa JWE cuando necesites confidencialidad del payload además de la integridad de la firma. (Consulta «",
   s4GuideLinkLabel: "JWE frente a JWT",
   s4i1Part2: "» en nuestra guía para saber cuándo usar cada uno.)",
-  s4GuideLink: "/post/jwe-vs-jwt",
+  s4GuideLink: "/post/jwe-vs-jwt/",
   s5Label: "Paso 5.",
   s5Title: "Descifra un JWE:",
   s5i1: "Pega un JWE y proporciona la clave privada para descifrarlo y recuperar el JWT original. La herramienta admite los algoritmos JWE habituales y muestra los campos de la cabecera y los parámetros enc.",

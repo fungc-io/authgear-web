@@ -41,7 +41,7 @@ export const jwtJwe = {
     'Chiffrez un JWT signé en JWE (JSON Web Encryption) à l’aide d’une clé publique pour produire des tokens confidentiels. Utilisez JWE lorsque vous avez besoin de la confidentialité de la charge utile en plus de l’intégrité de la signature. (Voir « ',
   s4GuideLinkLabel: 'JWE vs JWT',
   s4i1Part2: ' » dans notre guide pour savoir quand utiliser chaque format.)',
-  s4GuideLink: '/post/jwe-vs-jwt',
+  s4GuideLink: '/post/jwe-vs-jwt/',
   s5Label: 'Étape 5.',
   s5Title: 'Déchiffrer un JWE :',
   s5i1:

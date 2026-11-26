@@ -289,4 +289,4 @@ Authgear 提供稱為 AuthUI 的預先建置登入和註冊畫面。此外，您
 
 您可以使用 Authgear Portal 執行更多操作來自訂您的應用程式並管理您的使用者。
 
-最後，Authgear 擁有 API 和登入方法（例如 [biometric](https://docs.authgear.com/how-to-guide/authenticate/biometric)、OTP、TOTP 等），讓開發人員可以建立更多自訂體驗。要了解有關 Authgear 的更多信息，請查看我們的 [official documentation](https://docs.authgear.com/) 或加入我們的 [discord server](https://discord.gg/Kdn5vcYwAS)，向我們熱衷於身份驗證的開發人員社區提出問題並獲得答案。
+最後，Authgear 擁有 API 和登入方法（例如 [biometric](https://docs.authgear.com/how-to-guide/authenticate/biometric)、OTP、TOTP 等），讓開發人員可以建立更多自訂體驗。要了解有關 Authgear 的更多信息，請查看我們的 [official documentation](https://docs.authgear.com/) 或加入我們的 [discord server](https://discord.com/invite/Kdn5vcYwAS)，向我們熱衷於身份驗證的開發人員社區提出問題並獲得答案。

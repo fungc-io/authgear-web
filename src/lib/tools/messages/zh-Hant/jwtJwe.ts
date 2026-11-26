@@ -36,7 +36,7 @@ export const jwtJwe = {
     '以公鑰將已簽章 JWT 加密為 JWE。若除簽章完整性外尚需 payload 機密性，請使用 JWE。（請見「',
   s4GuideLinkLabel: 'JWE 與 JWT',
   s4i1Part2: '」指南以了解何時使用何者。）',
-  s4GuideLink: '/post/jwe-vs-jwt',
+  s4GuideLink: '/post/jwe-vs-jwt/',
   s5Label: '步驟 5.',
   s5Title: '解密 JWE：',
   s5i1:

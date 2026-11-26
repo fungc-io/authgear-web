@@ -63,7 +63,7 @@ test.describe('Dutch blog post', () => {
     );
     expect(hrefs.length).toBeGreaterThan(0);
     expect(hrefs.filter((href) => href.startsWith('/nl/') && href !== NL_POST)).toEqual([]);
-    await expect(page.locator('.blog-post__body a[href="/solutions/data-sovereignty"]').first()).toBeVisible();
+    await expect(page.locator('.blog-post__body a[href="/solutions/data-sovereignty/"]').first()).toBeVisible();
   });
 
   test('other pages never advertise the Dutch post', async ({ page }) => {

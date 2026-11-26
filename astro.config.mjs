@@ -3,6 +3,8 @@ import netlify from '@astrojs/netlify';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
+import { satteri } from '@astrojs/markdown-satteri';
+import internalLinkSlash from './src/lib/markdown/internal-link-slash.mjs';
 
 export default defineConfig({
   site: 'https://www.authgear.com',
@@ -30,6 +32,7 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory' },
   markdown: {
+    processor: satteri({ hastPlugins: [internalLinkSlash] }),
     shikiConfig: {
       theme: 'github-light',
       wrap: false,

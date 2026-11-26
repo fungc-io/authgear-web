@@ -67,7 +67,7 @@ const canonicalHref = data.canonicalUrl ?? new URL(Astro.url.pathname, Astro.sit
       <div class="ds-container">
         {categoryName && categorySlug && (
           <a
-            href={`/post-category/${categorySlug}`}
+            href={`/post-category/${categorySlug}/`}
             class="blog-post__category-chip"
           >
             {categoryName}

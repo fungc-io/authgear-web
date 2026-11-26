@@ -1,5 +1,6 @@
 import { t as tFn } from '@/i18n';
 import { TOOLS } from '@/lib/tools/tools-registry';
+import { localizedPath } from '@/lib/i18n';
 
 type Props = { locale: string; currentSlug?: string };
 
@@ -36,7 +37,7 @@ export default function MoreDevTools({ locale, currentSlug }: Props) {
               return (
                 <a
                   key={tool.slug}
-                  href={tool.href}
+                  href={localizedPath(locale, tool.href)}
                   className={cls}
                   {...(isCurrent ? { 'aria-current': 'page' as const } : {})}
                 >

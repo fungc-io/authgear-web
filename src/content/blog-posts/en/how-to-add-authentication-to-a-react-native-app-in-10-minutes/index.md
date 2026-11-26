@@ -289,4 +289,4 @@ Authgear offers pre-built login and registration screens called AuthUI. Also, yo
 
 There’s so much more you can do with Authgear Portal to customize your application and manage your users.
 
-Finally, Authgear has APIs, and login methods (such as [biometric](https://docs.authgear.com/how-to-guide/authenticate/biometric), OTP, TOTP, and more) that allow developers to build more custom experiences. To learn more about Authgear, check out our [official documentation](https://docs.authgear.com/) or join our [discord server](https://discord.gg/Kdn5vcYwAS) to ask questions and get answers from our community of developers passionate about authentication.
+Finally, Authgear has APIs, and login methods (such as [biometric](https://docs.authgear.com/how-to-guide/authenticate/biometric), OTP, TOTP, and more) that allow developers to build more custom experiences. To learn more about Authgear, check out our [official documentation](https://docs.authgear.com/) or join our [discord server](https://discord.com/invite/Kdn5vcYwAS) to ask questions and get answers from our community of developers passionate about authentication.
