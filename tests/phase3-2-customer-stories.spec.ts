@@ -21,3 +21,18 @@ test.describe('Phase 3-2: /customer-stories', () => {
     expect(cc).toMatch(/s-maxage=\d+/);
   });
 });
+
+test.describe('customer story structured data', () => {
+  for (const path of ['/customer-stories/bupa/', '/zh-hant/customer-stories/bupa/']) {
+    test(`${path} emits Article JSON-LD`, async ({ page }) => {
+      await page.goto(path);
+      const blocks = await page.locator('script[type="application/ld+json"]').evaluateAll((els) =>
+        els.map((el) => JSON.parse(el.textContent ?? '{}')),
+      );
+      const article = blocks.find((b) => b['@type'] === 'Article');
+      expect(article, 'Article block').toBeDefined();
+      expect(article.headline).toBe(await page.locator('h1').first().innerText());
+      expect(article.mainEntityOfPage).toBe(await page.locator('link[rel="canonical"]').getAttribute('href'));
+    });
+  }
+});

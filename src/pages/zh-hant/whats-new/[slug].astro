@@ -4,6 +4,7 @@ export const prerender = true;
 import { Image } from 'astro:assets';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleJsonLd from '@/components/seo/ArticleJsonLd.astro';
 import { t } from '@/i18n';
 import { localizedPath } from '@/lib/i18n';
 
@@ -38,6 +39,7 @@ const date = data.publishedAt.toLocaleDateString('zh-Hant', {
 ---
 
 <BaseLayout locale={locale} title={data.title} description={data.excerpt ?? ''}>
+  <ArticleJsonLd slot="head" title={data.title} description={data.excerpt} image={data.coverImage} publishedAt={data.publishedAt} />
   <article class="whats-new-post">
     <header class="whats-new-post__header">
       <div class="ds-container">
